@@ -7,6 +7,8 @@ Dotnet project and package dependency visualizer.
 
 `dotnet tool install DependenSee --global`
 
+available via [Nuget](https://www.nuget.org/packages/DependenSee)
+
 # Uninstall
 `dotnet tool uninstall DependenSee --global`
 
@@ -20,9 +22,22 @@ Dotnet project and package dependency visualizer.
 ![path/to/](https://raw.githubusercontent.com/madushans/DependenSee/main/sample-output.png)
 
 
+# Why `DependenSee` over 'X'
+
+Current popular options are to either use NDepend, VS Architecture Explorer or Code Map. While these options are feature rich, they also has a licensing cost. If all you want is to see the dependency graph, and nothing else, it may be hard to justify the licensing cost. Then `DependenSee` is for you.
+
+If you need to see the Type structure, relationships between your methods or types .etc. then you should use one of the options above instead. DependenSee is mean to be very simple, easy, straight forward to use and FREE! `DependenSee` does not intend to compete with the above. See [Limitations](#Limitations)
 
 # Docs
-For full docs run without arguments
+
+## Features
+
+- Creates the dependency graph for your solution.
+- Can only include or exclude certain namespaces so the result is not overwhelming or filled with noise.
+- Can create HTML, XML, JSON outputs
+- Can return XML or JSON to `STDOUT` for further processing by other command line tools
+ 
+For full docs run without any arguments
 `DependenSee`
 
 ````
@@ -68,4 +83,12 @@ Keep this in mind and inspect the output if you're distributing the outputs from
 
 - Currently only traverses `csproj` files. No other file types are supported.
 - No compile results are inspected. Only the project structure is used.
+
+# License 
+ [MIT License](https://github.com/madushans/DependenSee/blob/main/LICENSE)
+
+ # Powered by (Thanks)
+
+ - [PowerArgs](https://github.com/adamabdelhamed/PowerArgs)
+ - [Vis.JS](https://visjs.org/)
 
