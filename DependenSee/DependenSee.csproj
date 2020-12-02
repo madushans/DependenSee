@@ -7,7 +7,7 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>DependenSee</ToolCommandName>
     <PackageOutputPath>./bin/nupkg</PackageOutputPath>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,6 +26,8 @@
     <Authors>Madushan</Authors>
     <Description>Dotnet Tool to visualize or export project and package dependencies.</Description>
     <PackageTags>dependency, visualizer, dependensee</PackageTags>
+    <RepositoryUrl>https://github.com/madushans/DependenSee</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/madushans/DependenSee</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
