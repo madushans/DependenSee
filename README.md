@@ -17,7 +17,7 @@ Dotnet project and package dependency visualizer.
 
 ## Sample Output (HTML)
 
-![path/to/](./sample-output.png)
+![path/to/](https://raw.githubusercontent.com/madushans/DependenSee/main/sample-output.png)
 
 
 
