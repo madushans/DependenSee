@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>DependenSee</title>
-
+    <meta name="color-scheme" content="dark light">
 
     <style type="text/css">
         #mynetwork {
@@ -11,7 +11,7 @@
             border: 1px solid lightgray;
         }
 
-        
+
         body {
             font-family: sans-serif;
         }
@@ -91,14 +91,22 @@
         var source = '{#SOURCE_TOKEN#}';
 
         var nodes = [];
+
+        var isDark = false;
+        try {
+            isDark = window.matchMedia('(prefers-color-scheme: dark)');
+        } catch { }
+        var nodeFont = {  color: isDark ? '#ddd': 'black'};
+
         for (let index = 0; index < source.Projects.length; index++) {
             const project = source.Projects[index];
 
             var node = {
                 id: project.Id,
                 label: project.Name,
+                font: nodeFont,
                 type: 'project',
-                color: "#00cc22",
+                color: isDark ? '#009911' : '#00cc22',
             };
             nodes.push(node);
         }
@@ -109,6 +117,7 @@
             var node = {
                 id: package.Id,
                 label: package.Name,
+                font: nodeFont,
                 type: 'package',
                 color: "#22aaee",
             };
@@ -136,25 +145,19 @@
         };
         var options = {
             edges: {
-                font: {
-                    size: 12,
-                },
+                
             },
             nodes: {
                 shape: "box",
-                font: {
-                    bold: {
-                        color: "#000000",
-                    },
-                }
+                font: {size:30}
             },
 
             physics: {
                 barnesHut: {
-                    avoidOverlap: 0.4,
+                    avoidOverlap: 0.6,
                     centralGravity: 0,
                     springConstant: 0,
-                    gravitationalConstant: -400
+                    gravitationalConstant: -1000
                 },
                
                 stabilization: {
@@ -165,7 +168,10 @@
             }  
         };
         var network = new vis.Network(container, data, options);
-             
+        setTimeout(() => {
+            network.setOptions({ physics: false });
+            console.log('physics stopped');
+        }, 2000) 
     </script>
 
 </body>
