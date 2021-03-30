@@ -7,7 +7,9 @@ Dotnet project and package dependency visualizer.
 
 `dotnet tool install DependenSee --global`
 
-available via [Nuget](https://www.nuget.org/packages/DependenSee)
+available on [Nuget](https://www.nuget.org/packages/DependenSee) 
+
+![Nuget Badge](https://buildstats.info/nuget/dependensee)
 
 # Uninstall
 `dotnet tool uninstall DependenSee --global`
