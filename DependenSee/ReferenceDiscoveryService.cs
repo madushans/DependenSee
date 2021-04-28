@@ -139,7 +139,8 @@ namespace DependenSee
             var packages = new List<Package>();
             foreach (XmlNode node in packageReferenceNodes)
             {
-                var packageName = node.Attributes["Include"].Value;
+                var packageName = node.Attributes["Include"]?.Value
+                               ?? node.Attributes["Update"].Value;
 
                 packages.Add(new Package
                 {
