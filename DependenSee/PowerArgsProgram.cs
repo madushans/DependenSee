@@ -7,8 +7,10 @@ namespace DependenSee
         [ArgDescription("Creates an html document.")] Html,
         [ArgDescription("Creates a JSON file.")] Json,
         [ArgDescription("Creates a XML file.")] Xml,
+        [ArgDescription("Creates a Graphviz/DOT file.")] Graphviz,
         [ArgDescription("Writes JSON output to stdout")] ConsoleJson,
         [ArgDescription("Writes XML output to stdout")] ConsoleXml,
+        [ArgDescription("Writes Graphviz output to stdout")] ConsoleGraphviz,
     }
 
     [ArgExceptionBehavior(ArgExceptionPolicy.StandardExceptionHandling)]

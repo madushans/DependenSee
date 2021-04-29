@@ -17,6 +17,7 @@ namespace DependenSee
                 case OutputTypes.Html:
                 case OutputTypes.Xml:
                 case OutputTypes.Json:
+                case OutputTypes.Graphviz:
                     if (string.IsNullOrWhiteSpace(outputPath))
                     {
                         Console.Error.WriteLine($"output type {type} require specifying {nameof(outputPath)}");
@@ -36,11 +37,17 @@ namespace DependenSee
                 case OutputTypes.Json:
                     WriteAsJsonToFile(result, outputPath);
                     break;
+                case OutputTypes.Graphviz:
+                    WriteAsGraphvizToFile(result, outputPath);
+                    break;
                 case OutputTypes.ConsoleJson:
                     WriteAsJsonToConsole(result);
                     break;
                 case OutputTypes.ConsoleXml:
                     WriteAsXmlToConsole(result);
+                    break;
+                case OutputTypes.ConsoleGraphviz:
+                    WriteAsGraphvizToConsole(result);
                     break;
                 default:
                     throw new Exception($"Unknown {nameof(type)} '{type}'");
@@ -79,5 +86,15 @@ namespace DependenSee
         }
         private void WriteAsJsonToConsole(DiscoveryResult result) =>
             Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+
+        private static void WriteAsGraphvizToConsole(DiscoveryResult result) 
+            => Console.WriteLine(GraphvizSerializer.ToString(result));
+
+        private static void WriteAsGraphvizToFile(DiscoveryResult result, string outputPath)
+        {
+            File.WriteAllText(outputPath, GraphvizSerializer.ToString(result));
+            Console.WriteLine($"GraphViz output written to {outputPath}");
+        }
+
     }
 }
