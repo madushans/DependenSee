@@ -14,6 +14,16 @@ namespace DependenSee
     }
 
     [ArgExceptionBehavior(ArgExceptionPolicy.StandardExceptionHandling)]
+    [ArgDescription(@"
+
+
+    ==================================================================
+    |                                                                |
+    |   For full documentation, support and reporting bugs           |
+    |   Please visit  https://www.github.com/madushans/DependenSee   |
+    |                                                                |
+    ==================================================================
+")]
     public class PowerArgsProgram
     {
         [HelpHook]

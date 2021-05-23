@@ -18,6 +18,7 @@ available on [Nuget](https://www.nuget.org/packages/DependenSee)
 
 `DependenSee root/of/projects path/to/output.html`
 
+See [full documentation](#Documentation)
 
 ## Sample Output (HTML)
 
@@ -34,12 +35,11 @@ If you need to see the Type structure, relationships between your methods or typ
 
 - Creates the dependency graph for your solution.
 - Can only include or exclude certain namespaces so the result is not overwhelming or filled with noise.
-- Can create HTML, XML, JSON outputs
-- Can return XML or JSON to `STDOUT` for further processing by other command line tools
+- Can create HTML, XML, JSON and Graphviz outputs
+- Can return output to `STDOUT` for further processing by other command line tools
  
 For full docs run without any arguments
 `DependenSee`
-
 
 # Documentation
 
@@ -104,10 +104,20 @@ Type of output to produce. Following types are available.
 - `Html` - Creates an html document.
 - `Json` - Creates a JSON file.
 - `Xml` - Creates a XML file.
+- `Graphviz` - Creates a Graphviz/DOT file.
 - `ConsoleJson` - Writes JSON output to stdout
 - `ConsoleXml` - Writes XML output to stdout
+- `GonsoleGraphviz` - Writes Graphviz output to stdout
 
 When a `Console...` type output is  specified, the `-OutputPath` can be ommitted.
+
+To visualize Graphviz output, either use 
+- Use an online visualizer such as [https://dreampuf.github.io/GraphvizOnline](https://dreampuf.github.io/GraphvizOnline)
+
+- or use tooling from [https://graphviz.org](https://graphviz.org)
+   - once installed you can use `.\dot.exe DependenSee-OutputFile.dot -oTargetFile.Svg -Tsvg`
+   - `dot.exe` is located at `your-graphvis-installation/bin`
+   - see Graphviz docs for [command line usage](https://graphviz.org/doc/info/command.html) and supported [output types](https://graphviz.org/doc/info/output.html) 
 
 **Shorthand: `-T`**
 
@@ -202,6 +212,7 @@ Keep this in mind and inspect the output if you're distributing the outputs from
 
  # Powered by (Thanks)
 
+ - [Community Contributions 🙏](https://github.com/madushans/DependenSee/pulls?q=is%3Apr+is%3Aclosed)
  - [PowerArgs](https://github.com/adamabdelhamed/PowerArgs)
- - [Vis.JS](https://visjs.org/)
+ - [Vis.JS](https://visjs.org/) 
 
