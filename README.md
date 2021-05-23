@@ -20,7 +20,9 @@ available on [Nuget](https://www.nuget.org/packages/DependenSee)
 
 See [full documentation](#Documentation)
 
-## Sample Output (HTML)
+## Sample Output (HTML, interactive)
+
+Download [this](https://raw.githubusercontent.com/madushans/DependenSee/main/sample-html-output.html) as html and open in a browser for a demo.
 
 ![DependenSee sample html output](https://raw.githubusercontent.com/madushans/DependenSee/main/sample-output.png)
 
