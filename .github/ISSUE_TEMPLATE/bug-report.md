@@ -11,7 +11,7 @@ Hey there,
 
 Pull Requests are welcome. If you know how to add the bugfix to code and you're sure it fits well with the scope of DependenSee, feel free to branch off of `dev` and put a PR.
 
-This template is here only if you're not sure if it really is a bug, if is in scope or you're not looking to put a PR/not know how to start.
+This template is here only if you're not sure if it really is a bug, if is in scope or you're not looking to contribute code/not know how to start.
 
 ---
 
