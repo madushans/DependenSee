@@ -193,14 +193,14 @@ If you want to include spaces between items, make sure you enclose the parameter
 ### Examples
 
 - `DependenSee \Source\SolutionFolder -O ConsoleJson -ExcludePackageNamespaces Microsoft.Logging,Azure`
-  - Excludes packages starting with Microsoft.Logging and packages starting with Azure
+  - Excludes packages starting with `Microsoft.Logging` and packages starting with `Azure`
 - `DependenSee \Source\SolutionFolder -O ConsoleJson -EPaN Microsoft.Logging,Azure`
-  - Excludes packages starting with Microsoft.Logging and packages starting with Azure
+  - Excludes packages starting with `Microsoft.Logging` and packages starting with `Azure`
 
 
 # Privacy and Security Note
 
-In the output, the full path to project files is used as the unique identifier. So your file structure is exposed in the generated output. It attempts to only use the subdirectory structure, so an attempt is made to hide the full path.
+In the output, the full path to project files is used as the unique identifier. So your file structure is exposed in the generated output. It attempts to only use the subdirectory structure, so an attempt is made to hide the full path, however it is possible these paths may include your username for example, if your project was located in the default VS path/repo clone location of `C:\Users\<username>\Repos\...`.
 
 Keep this in mind and inspect the output if you're distributing the outputs from this tool.
 
@@ -212,9 +212,21 @@ Keep this in mind and inspect the output if you're distributing the outputs from
 # License 
  [MIT License](https://github.com/madushans/DependenSee/blob/main/LICENSE)
 
+# Support
+If you are experiencing issues, please [open an issue](https://github.com/madushans/DependenSee/issues) with details and reproduction steps.
+
+ # Contributions
+
+ Pull requests welcome. ♥
+
+ Please branch off of `dev` branch and put a PR to `dev` for your changes.
+ If you have a contribution you're not sure about, please feel free to [open an issue](https://github.com/madushans/DependenSee/issues). However a prior approval is not necessary for a PR to be merged.
+
+ Once approved, all pending changes (possibly multiple PRs) will be merged to `main` for a release to be distributed via NuGet.
+
  # Powered by (Thanks)
 
- - [Community Contributions 🙏](https://github.com/madushans/DependenSee/pulls?q=is%3Apr+is%3Aclosed)
+ - [Your Community Contributions 🙏](https://github.com/madushans/DependenSee/pulls?q=is%3Apr+is%3Aclosed)
  - [PowerArgs](https://github.com/adamabdelhamed/PowerArgs)
  - [Vis.JS](https://visjs.org/) 
 
