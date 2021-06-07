@@ -15,7 +15,13 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: '**/*.csproj'
 - task: NuGetToolInstaller@1
+
+
 - task: NuGetCommand@2
   inputs:
     command: 'pack'
