@@ -135,7 +135,7 @@ namespace DependenSee
 
         private List<Package> DiscoverPackageReferences(XmlDocument xml)
         {
-            var packageReferenceNodes = xml.SelectNodes("//PackageReference");
+            var packageReferenceNodes = xml.SelectNodes("//*[local-name() = 'PackageReference']");
             var packages = new List<Package>();
             foreach (XmlNode node in packageReferenceNodes)
             {
@@ -153,7 +153,7 @@ namespace DependenSee
 
         private List<Project> DiscoverProjectRefrences(XmlDocument xml, string basePath)
         {
-            var projectReferenceNodes = xml.SelectNodes("//ProjectReference");
+            var projectReferenceNodes = xml.SelectNodes("//*[local-name() = 'ProjectReference']");
             var projects = new List<Project>();
 
             foreach (XmlNode node in projectReferenceNodes)
