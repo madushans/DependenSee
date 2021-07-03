@@ -135,7 +135,11 @@ namespace DependenSee
 
         private List<Package> DiscoverPackageReferences(XmlDocument xml)
         {
-            var packageReferenceNodes = xml.SelectNodes("//*[local-name() = 'PackageReference']");
+            // PackageReference = Nuget package
+            // Reference = COM/DLL reference. These can have a child <HintPath>relative path to dll</HintPath>'
+            // Reference also present for .NET Framework projects when they reference BCL assemblies, but these
+            // do not include a HintPath
+            var packageReferenceNodes = xml.SelectNodes("//*[local-name() = 'PackageReference' or local-name() = 'Reference']");
             var packages = new List<Package>();
             foreach (XmlNode node in packageReferenceNodes)
             {
