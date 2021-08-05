@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.IO;
+using System.Net;
 using System.Reflection;
 using System.Xml.Serialization;
 
@@ -9,8 +10,9 @@ namespace DependenSee
     internal class ResultWriter
     {
         private const string HtmlTemplateToken = "'{#SOURCE_TOKEN#}'";
+        private const string HtmlTitleToken = "{#TITLE_TOKEN#}";
         private const string HtmlTemplateName = "HtmlResultTemplate.html";
-        internal void Write(DiscoveryResult result, OutputTypes type, string outputPath)
+        internal void Write(DiscoveryResult result, OutputTypes type, string outputPath, string htmlTitle)
         {
             switch (type)
             {
@@ -29,7 +31,7 @@ namespace DependenSee
             switch (type)
             {
                 case OutputTypes.Html:
-                    WriteAsHtmlToFile(result, outputPath);
+                    WriteAsHtmlToFile(result, outputPath, htmlTitle);
                     break;
                 case OutputTypes.Xml:
                     WriteAsXmlToFile(result, outputPath);
@@ -54,11 +56,13 @@ namespace DependenSee
             }
         }
 
-        private void WriteAsHtmlToFile(DiscoveryResult result, string outputPath)
+        private void WriteAsHtmlToFile(DiscoveryResult result, string outputPath, string title)
         {
             var templatePath = Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName, HtmlTemplateName);
             var template = File.ReadAllText(templatePath);
-            var html = template.Replace(HtmlTemplateToken, JsonConvert.SerializeObject(result, Formatting.Indented));
+            var html = template
+                .Replace(HtmlTemplateToken, JsonConvert.SerializeObject(result, Formatting.Indented))
+                .Replace(HtmlTitleToken, WebUtility.HtmlEncode(title));
 
             File.WriteAllText(outputPath, html);
             Console.WriteLine($"HTML output written to {outputPath}");
