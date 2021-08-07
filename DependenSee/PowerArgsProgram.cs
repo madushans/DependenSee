@@ -48,6 +48,11 @@ namespace DependenSee
         [ArgDescription("Type of the output.")]
         [ArgShortcut("T")]
         public OutputTypes OutputType { get; set; }
+        
+        [ArgDefaultValue("DependenSee")]
+        [ArgDescription("Document title for Html output. Ignored for other output types.")]
+        [ArgShortcut("HT")]
+        public string HtmlTitle { get; set; }
 
         [ArgDefaultValue("")]
         [ArgDescription("Comma separated list of project file prefixes to include. Wildcards not allowed. Only the filename is considered, case insensitive. Ex:'MyApp.Core, MyApp.Extensions' Includes only projects starting with MyApp.Core and projects starting with MyApp.Extensions")]
@@ -84,7 +89,7 @@ namespace DependenSee
                 SourceFolder = SourceFolder,
             };
             var result = service.Discover();
-            new ResultWriter().Write(result, OutputType, OutputPath);
+            new ResultWriter().Write(result, OutputType, OutputPath, HtmlTitle);
         }
     }
 }
