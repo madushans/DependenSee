@@ -131,6 +131,22 @@ To visualize Graphviz output, either use
 - `DependenSee \Source\SolutionFolder \Test\MyOutput.html -OutputType Json`
 - `DependenSee \Source\SolutionFolder -T ConsoleJson`
 
+## HtmlTitle
+
+Document title for Html output. Ignored when creating output types other than `Html`.
+
+If your title has spaces, you will need to enclose it in double quotes. The title should not be HTML-encoded ahead of time as DependenSee will do this automatically.
+
+**Shorthand: `-HT`**
+
+**Default: `DependenSee`**
+
+### Examples
+
+- `DependenSee \Source\SolutionFolder \Test\MyOutput.html -HtmlTitle "My Graph Title"`
+- `DependenSee \Source\SolutionFolder \Test\MyOutput.html -T Html -HtmlTitle my-graph-title`
+- `DependenSee \Source\SolutionFolder \Test\MyOutput.html -HT "My Graph Title"`
+
 ## IncludeProjectNamespaces
 Comma separated list of project file prefixes to include. Wildcards not allowed. Only the filename is considered, case insensitive. 
 
