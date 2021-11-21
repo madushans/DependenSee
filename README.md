@@ -3,7 +3,7 @@ Dotnet project and package dependency visualizer.
 
 # Install
 
- ***Requires .NET 5 or higher***
+ ***Requires .NET 6 Runtime***
 
 `dotnet tool install DependenSee --global`
 
