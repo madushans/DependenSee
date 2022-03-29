@@ -222,7 +222,7 @@ Keep this in mind and inspect the output if you're distributing the outputs from
 
 # Limitations
 
-- Currently only traverses `csproj` files. No other file types are supported.
+- Currently only traverses `csproj` and `vbproj` files. No other file types are supported.
 - No compile results are inspected. Only the project structure is used.
 
 # License 
