@@ -58,7 +58,8 @@ namespace DependenSee
 
         private void Discover(string folder, DiscoveryResult result)
         {
-            var projectFiles = Directory.EnumerateFiles(folder, "*.csproj");
+            var projectFiles = Directory.EnumerateFiles(folder, "*.csproj")
+                .Concat(Directory.EnumerateFiles(folder, "*.vbproj"));
             foreach (var file in projectFiles)
             {
                 var id = file.Replace(SourceFolder, "");
