@@ -14,7 +14,6 @@ public enum OutputTypes
 [ArgExceptionBehavior(ArgExceptionPolicy.StandardExceptionHandling)]
 [ArgDescription(@"
 
-
     ==================================================================
     |                                                                |
     |   For full documentation, support and reporting bugs           |
@@ -43,10 +42,10 @@ public class PowerArgsProgram
     public bool IncludePackages { get; set; }
 
     [ArgDefaultValue(OutputTypes.Html)]
-    [ArgDescription("Type of the output.")]
+    [ArgDescription("Type of the output. Warnings are written to stderr. If you're piping the stdout, you may also want to check the stderr.")]
     [ArgShortcut("T")]
     public OutputTypes OutputType { get; set; }
-    
+
     [ArgDefaultValue("DependenSee")]
     [ArgDescription("Document title for Html output. Ignored for other output types.")]
     [ArgShortcut("HT")]
@@ -69,6 +68,16 @@ public class PowerArgsProgram
     [ArgDescription("Comma separated list of package name prefixes to exclude. Wildcards not allowed. Only the filename is considered, case insensitive. If specified, 'IncludePackages' is overridden to True. This must be a subset of includes to be useful. Ex: 'Microsoft.Logging, Azure' Excludes packages starting with Microsoft.Logging and packages starting with Azure")]
     [ArgShortcut("EPaN")]
     public string ExcludePackageNamespaces { get; set; }
+    [ArgDefaultValue("")]
+    [ArgDescription("Comma Separated list of folders (either absolute paths or relative to SourceFolder) to skip during scan, even if there are references to them from your projects.")]
+    [ArgShortcut("EFol")]
+    public string ExcludeFolders { get; set; }
+
+    [ArgDefaultValue(false)]
+    [ArgDescription("Set if you want the scan to follow valid reparse points. This is helpful if your project references are relying on symlinks, NTFS junction points .etc.")]
+    [ArgShortcut("FReP")]
+    public bool FollowReparsePoints { get; set; }
+
 
     public void Main()
     {
@@ -81,10 +90,14 @@ public class PowerArgsProgram
 
             IncludePackages = IncludePackages,
 
+            ExcludeFolders = ExcludeFolders,
+            FollowReparsePoints = FollowReparsePoints,
+
             OutputPath = OutputPath,
             OutputType = OutputType,
 
             SourceFolder = SourceFolder,
+
         };
         var result = service.Discover();
         new ResultWriter().Write(result, OutputType, OutputPath, HtmlTitle);

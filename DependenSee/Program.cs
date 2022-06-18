@@ -51,7 +51,7 @@ public static class Program
     |       - dotnet tool update DependenSee --global           |
     |                                                           |
     |     - check current version with                          |
-    |       - dotnet tool update DependenSee --global           |
+    |       - dotnet tool list --global                         |
     |                                                           |
     |     - Please open an issue at                             |
     |       - https://www.github.com/madushans/DependenSee      |

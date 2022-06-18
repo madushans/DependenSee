@@ -10,6 +10,8 @@ public class ReferenceDiscoveryService
     public string ExcludeProjectNamespaces { get; set; }
     public string IncludePackageNamespaces { get; set; }
     public string ExcludePackageNamespaces { get; set; }
+    public bool FollowReparsePoints { get; set; }
+    public string ExcludeFolders { get; set; }
 
     private string[] _includeProjectNamespaces { get; set; }
     private string[] _excludeProjectNamespaces { get; set; }
@@ -52,6 +54,26 @@ public class ReferenceDiscoveryService
 
     private void Discover(string folder, DiscoveryResult result)
     {
+        var info = new DirectoryInfo(folder);
+
+        var excludedByRule = GetFolderExclusionFor(info.FullName);
+        if (excludedByRule != null)
+        {
+            Console.Error.WriteLine($"Skipping folder '{folder}' excluded by rule '{excludedByRule}'\r\n\r\n");
+            return;
+        }
+
+        if (!info.Exists)
+        {
+            Console.Error.WriteLine($"Skipping scan for missing folder '{folder}'\r\n\r\n");
+            return;
+        }
+        if (info.Attributes.HasFlag(FileAttributes.ReparsePoint) && !FollowReparsePoints)
+        {
+            Console.Error.WriteLine($"Skipping scan for reparse point '{folder}'. Set {nameof(PowerArgsProgram.FollowReparsePoints)} flag to follow.\r\n\r\n");
+            return;
+        }
+
         var projectFiles = Directory.EnumerateFiles(folder, "*.csproj")
             .Concat(Directory.EnumerateFiles(folder, "*.vbproj"));
         foreach (var file in projectFiles)
@@ -150,6 +172,20 @@ public class ReferenceDiscoveryService
         return packages;
     }
 
+    private string GetFolderExclusionFor(string fullFolderPath)
+    {
+        if (string.IsNullOrWhiteSpace(ExcludeFolders)) return null;
+
+        var allRules = ExcludeFolders
+            .Split(',')
+            .Select(r => Path.IsPathRooted(r) ? r : Path.GetFullPath(r, SourceFolder))
+            .Select(r => r.ToLower().Trim())
+            .ToList();
+
+        fullFolderPath = fullFolderPath.ToLower();
+        return allRules.FirstOrDefault(r => fullFolderPath.StartsWith(r));
+    }
+
     private List<Project> DiscoverProjectRefrences(XmlDocument xml, string basePath)
     {
         var projectReferenceNodes = xml.SelectNodes("//*[local-name() = 'ProjectReference']");
@@ -161,6 +197,11 @@ public class ReferenceDiscoveryService
             var fullPath = Path.GetFullPath(referencePath, basePath);
 
             string filename = Path.GetFileNameWithoutExtension(fullPath);
+
+            if (!fullPath.ToLower().StartsWith(SourceFolder.ToLower()))
+            {
+                Console.Error.WriteLine($"Found referenced project '{fullPath}' outside of provided source folder. Run DependenSee on the parent folder of all your projects to prevent duplicates and/or missing projects from the output.\r\n\r\n");
+            }
 
             projects.Add(new Project
             {
