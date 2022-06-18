@@ -1,50 +1,46 @@
-﻿using PowerArgs;
-using System;
-
-namespace DependenSee
+﻿namespace DependenSee;
+public static class Program
 {
-    public static class Program
+    public static int Main(string[] args)
     {
-        public static int Main(string[] args)
+        if (args is null || args.Length == 0)
         {
-            if (args is null || args.Length == 0)
-            {
-                // if no arguments specified, instead of showing an error,
-                // pretend as help command
-                Args.InvokeMain<PowerArgsProgram>(new[] { $"-{nameof(PowerArgsProgram.Help)}" });
-                return 0;
-            }
-            try
-            {
-                Args.InvokeMain<PowerArgsProgram>(args);
-                return 0;
-            }
-            catch(Exception ex)
-            {
-                WriteUnexpectedException(ex);
-                return 1;
-            }
+            // if no arguments specified, instead of showing an error,
+            // pretend as help command
+            Args.InvokeMain<PowerArgsProgram>(new[] { $"-{nameof(PowerArgsProgram.Help)}" });
+            return 0;
+        }
+        try
+        {
+            Args.InvokeMain<PowerArgsProgram>(args);
+            return 0;
+        }
+        catch (Exception ex)
+        {
+            WriteUnexpectedException(ex);
+            return 1;
+        }
+    }
+
+    private static void WriteUnexpectedException(Exception ex)
+    {
+        var currentColor = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.Yellow;
+
+        Console.Error.WriteLine($"{ex.GetType()}:{ex.Message}\r\n{ex.StackTrace}");
+
+        var inner = ex.InnerException;
+
+        while (inner != null)
+        {
+            Console.Error.WriteLine($"-----Inner Exception----");
+            Console.Error.WriteLine($"{inner.GetType()}:{inner.Message}\r\n{inner.StackTrace}");
+            inner = inner.InnerException;
         }
 
-        private static void WriteUnexpectedException(Exception ex)
-        {
-            var currentColor = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.ForegroundColor = ConsoleColor.Red;
 
-            Console.Error.WriteLine($"{ex.GetType()}:{ex.Message}\r\n{ex.StackTrace}");
-
-            var inner = ex.InnerException;
-
-            while (inner != null)
-            {
-                Console.Error.WriteLine($"-----Inner Exception----");
-                Console.Error.WriteLine($"{inner.GetType()}:{inner.Message}\r\n{inner.StackTrace}");
-                inner = inner.InnerException;
-            }
-
-            Console.ForegroundColor = ConsoleColor.Red;
-
-            Console.Error.WriteLine(@"
+        Console.Error.WriteLine(@"
 
     =============================================================
     |                                                           |
@@ -64,7 +60,6 @@ namespace DependenSee
     |                                                           |
     =============================================================
 ");
-            Console.ForegroundColor = currentColor;
-        }
+        Console.ForegroundColor = currentColor;
     }
 }
