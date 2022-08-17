@@ -11,13 +11,6 @@ public enum OutputTypes
     [ArgDescription("Writes Graphviz output to stdout")] ConsoleGraphviz,
 }
 
-public enum ErrorCodes
-{
-    [ArgDescription("Success")] None,
-    [ArgDescription("Multiple solution files were found when using 'UseSingleSolutionFile' parameter. Specify solution files using 'SolutionFiles' instead or omit 'UseSingleSolutionFile' parameter")] MultipleSolutionFilesFound = 100,
-    [ArgDescription("No solution files were found")] NoSolutionFilesFound,
-}
-
 [ArgExceptionBehavior(ArgExceptionPolicy.StandardExceptionHandling)]
 [ArgDescription(@"
 
@@ -97,10 +90,6 @@ public class PowerArgsProgram
     [ArgShortcut("SF")]
     public string SolutionFiles { get; set; }
 
-    // Return value
-    [ArgDefaultValue(ErrorCodes.None)]
-    public ErrorCodes ErrorCode { get; set; }
-
 
     public void Main()
     {
@@ -127,7 +116,6 @@ public class PowerArgsProgram
         };
         var result = service.Discover();
 
-        ErrorCode = result.ErrorCode;
-        new ResultWriter().Write(result.DiscoveryResult, OutputType, OutputPath, HtmlTitle);
+        new ResultWriter().Write(result, OutputType, OutputPath, HtmlTitle);
     }
 }

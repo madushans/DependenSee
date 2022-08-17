@@ -20,11 +20,11 @@ public class ReferenceDiscoveryService
     private string[] _includePackageNamespaces { get; set; }
     private string[] _excludePackageNamespaces { get; set; }
 
+    private string[] _solutionFileNames { get; set; }
+
     private bool _shouldIncludePackages { get; set; }
 
-    private ErrorCodes _errorCode { get; set; }
-
-    public (DiscoveryResult DiscoveryResult, ErrorCodes ErrorCode) Discover()
+    public DiscoveryResult Discover()
     {
         var result = new DiscoveryResult
         {
@@ -39,15 +39,28 @@ public class ReferenceDiscoveryService
         _includePackageNamespaces = ParseStringToLowercaseStringArray(IncludePackageNamespaces);
         _excludePackageNamespaces = ParseStringToLowercaseStringArray(ExcludePackageNamespaces);
 
+        _solutionFileNames = ParseStringToLowercaseStringArray(SolutionFiles);
+
         if (!_includeProjectNamespaces.Any()) _includeProjectNamespaces = new[] { "" };
         if (!_includePackageNamespaces.Any()) _includePackageNamespaces = new[] { "" };
         _shouldIncludePackages = IncludePackages
             || !string.IsNullOrWhiteSpace(IncludePackageNamespaces)
             || !string.IsNullOrWhiteSpace(ExcludePackageNamespaces);
 
-        Discover(SourceFolder, result);
+        if (UseSingleSolutionFile || SolutionFiles.Length > 0)
+        {
+            var solutionFiles = GetValidatedSolutionFiles(SourceFolder);
+            if (solutionFiles != null && solutionFiles.Count > 0)
+            {
+                Discover(SourceFolder, solutionFiles, result);
+            }
+        }
+        else
+        {
+            Discover(SourceFolder, result);
+        }
 
-        return (result, _errorCode);
+        return result;
     }
 
     private static string[] ParseStringToLowercaseStringArray(string list) =>
@@ -56,6 +69,58 @@ public class ReferenceDiscoveryService
         : list.Split(',', StringSplitOptions.RemoveEmptyEntries)
             .Select(e => e.Trim().ToLower())
             .ToArray();
+
+    private List<string> GetValidatedSolutionFiles(string folder)
+    {
+        var solutionFilesInFolder = GetSolutionFilesInFolder(folder);
+
+        if (solutionFilesInFolder.Count == 0)
+        {
+            Console.Error.WriteLine($"No solution files found in '{folder}'\r\n\r\n");
+            return null;
+        }
+
+        if (solutionFilesInFolder.Count > 1 && UseSingleSolutionFile)
+        {
+            Console.Error.WriteLine($"Multiple solution files found in '{folder}'\r\n\r\n");
+            return null;
+        }
+
+
+        if (UseSingleSolutionFile)
+        {
+            return new List<string> { solutionFilesInFolder[0] };
+        }
+
+        var foundSolutionFiles = (from sfif in solutionFilesInFolder
+                                  from sf in _solutionFileNames
+                                  where sfif.EndsWith(sf, StringComparison.OrdinalIgnoreCase)
+                                  select sfif).ToList();
+
+        if (foundSolutionFiles.Count != _solutionFileNames.Length)
+        {
+            Console.Error.WriteLine($"Solution files specified in SolutionFiles parameter were not all found\r\n\r\n");
+            return null;
+        }
+
+        return foundSolutionFiles;
+    }
+
+    private List<String> GetSolutionFilesInFolder(string folder)
+    {
+        var info = new DirectoryInfo(folder);
+        return (from fileInfo in info.GetFiles("*.sln")
+                select fileInfo.FullName).ToList();
+    }
+
+    private void Discover(string folder, IEnumerable<string> solutionFiles, DiscoveryResult result)
+    {
+        foreach (var solutionFile in solutionFiles)
+        {
+            var cleanedSolutionFileName = solutionFile.Replace(folder, ".");
+            Console.WriteLine($"Discovering projects in {cleanedSolutionFileName}");
+        }
+    }
 
     private void Discover(string folder, DiscoveryResult result)
     {
