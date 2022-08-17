@@ -12,8 +12,15 @@ public static class Program
         }
         try
         {
-            Args.InvokeMain<PowerArgsProgram>(args);
-            return 0;
+            var objResult = Args.InvokeMain<PowerArgsProgram>(args);
+            var result = objResult.Value as PowerArgsProgram;
+            if (result.ErrorCode == ErrorCodes.None)
+            {
+                return 0;
+            }
+
+            WriteErrorMessages(result);
+            return (int)result.ErrorCode;
         }
         catch (Exception ex)
         {
@@ -21,6 +28,21 @@ public static class Program
             return 1;
         }
     }
+
+    private static void WriteErrorMessages(PowerArgsProgram result)
+    {
+        var currentColor = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.Yellow;
+
+        var errorCodeType = result.ErrorCode.GetType();
+        var errorCodeValueMember = errorCodeType.GetField(result.ErrorCode.ToString());
+        var argDescription = errorCodeValueMember.GetCustomAttribute<ArgDescription>();
+
+        Console.WriteLine(argDescription.Description);
+
+        Console.ForegroundColor = currentColor;
+    }
+
 
     private static void WriteUnexpectedException(Exception ex)
     {

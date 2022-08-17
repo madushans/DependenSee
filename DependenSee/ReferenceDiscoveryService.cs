@@ -12,6 +12,8 @@ public class ReferenceDiscoveryService
     public string ExcludePackageNamespaces { get; set; }
     public bool FollowReparsePoints { get; set; }
     public string ExcludeFolders { get; set; }
+    public string SolutionFiles { get; set; }
+    public bool UseSingleSolutionFile { get; set; }
 
     private string[] _includeProjectNamespaces { get; set; }
     private string[] _excludeProjectNamespaces { get; set; }
@@ -20,7 +22,9 @@ public class ReferenceDiscoveryService
 
     private bool _shouldIncludePackages { get; set; }
 
-    public DiscoveryResult Discover()
+    private ErrorCodes _errorCode { get; set; }
+
+    public (DiscoveryResult DiscoveryResult, ErrorCodes ErrorCode) Discover()
     {
         var result = new DiscoveryResult
         {
@@ -42,7 +46,8 @@ public class ReferenceDiscoveryService
             || !string.IsNullOrWhiteSpace(ExcludePackageNamespaces);
 
         Discover(SourceFolder, result);
-        return result;
+
+        return (result, _errorCode);
     }
 
     private static string[] ParseStringToLowercaseStringArray(string list) =>
