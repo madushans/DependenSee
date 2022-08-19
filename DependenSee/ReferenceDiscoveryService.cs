@@ -52,7 +52,7 @@ public class ReferenceDiscoveryService
             var solutionFiles = GetValidatedSolutionFiles(SourceFolder);
             if (solutionFiles != null && solutionFiles.Count > 0)
             {
-                Discover(SourceFolder, solutionFiles, result);
+                Discover(solutionFiles, result);
             }
         }
         else
@@ -113,12 +113,56 @@ public class ReferenceDiscoveryService
                 select fileInfo.FullName).ToList();
     }
 
-    private void Discover(string folder, IEnumerable<string> solutionFiles, DiscoveryResult result)
+    private void Discover(IEnumerable<string> solutionFiles, DiscoveryResult result)
     {
+        var projectFiles = DiscoverProjectsFromSolutionFiles(solutionFiles);
+        foreach (var file in projectFiles)
+        {
+            DiscoverSingleProject(file, result);
+        }
+    }
+
+    private List<string> DiscoverProjectsFromSolutionFiles(IEnumerable<string> solutionFiles)
+    {
+        var projects = new List<string>();
+
         foreach (var solutionFile in solutionFiles)
         {
-            var cleanedSolutionFileName = solutionFile.Replace(folder, ".");
-            Console.WriteLine($"Discovering projects in {cleanedSolutionFileName}");
+            var solutionProjects = DiscoverProjectsFromSolutionFile(solutionFile);
+
+            projects.AddRange(solutionProjects.Except(projects));
+        }
+
+        return projects;
+    }
+
+    private List<string> DiscoverProjectsFromSolutionFile(string solutionFile)
+    {
+        /*
+         * Finding lines in solution file poiting to C# or VB.NET projects. The lines look like this:
+         *
+         *   Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleProject", "SampleProject\SampleProject.csproj", "{0FBD58A5-1EEE-4D36-AB37-AD6CC8252191}"
+         *
+         * First let splits this line into two by the '=' sign and trim leading and trailing whitespace.
+         * Second let splits the part after = sign by the ',' and trim leading and trailing whitespace.
+         * Finally returning the project file full path from the second splits second element after removing the leading and trailing " signs.
+         */
+        var solutionLines = ReadSolutionFileLines(solutionFile);
+        return (from solutionLine in solutionLines
+                where solutionLine.Contains(".csproj", StringComparison.OrdinalIgnoreCase) ||
+                      solutionLine.Contains(".vbproj", StringComparison.OrdinalIgnoreCase)
+                let lineParts = solutionLine.Split("=".ToCharArray(), StringSplitOptions.TrimEntries)
+                let projectInfo = lineParts[1].Split(",".ToCharArray(), StringSplitOptions.TrimEntries)
+                select Path.Combine(SourceFolder, projectInfo[1].Trim('"'))).ToList();
+    }
+
+    private string[] ReadSolutionFileLines(string solutionFile)
+    {
+        using (var streamReader = new StreamReader(solutionFile))
+        {
+            var contents = streamReader.ReadToEnd();
+            // Trim lines and remove empty entries as these are not needed.
+            return contents.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         }
     }
 
@@ -148,61 +192,67 @@ public class ReferenceDiscoveryService
             .Concat(Directory.EnumerateFiles(folder, "*.vbproj"));
         foreach (var file in projectFiles)
         {
-            var id = file.Replace(SourceFolder, "");
-            var name = Path.GetFileNameWithoutExtension(file);
-            if (!_includeProjectNamespaces.Any(i => name.ToLower().StartsWith(i))) continue;
-            if (_excludeProjectNamespaces.Any(i => name.ToLower().StartsWith(i))) continue;
-
-            // add this project.
-            if (!result.Projects.Any(p => p.Id == id))
-                result.Projects.Add(new Project
-                {
-                    Id = id,
-                    Name = name
-                });
-
-            var (projects, packages) = DiscoverFileReferences(file);
-
-            projects = projects
-                    .Where(p =>
-                        _includeProjectNamespaces.Any(i => p.Name.ToLower().StartsWith(i))
-                        && !_excludeProjectNamespaces.Any(i => p.Name.ToLower().StartsWith(i)))
-                    .ToList();
-
-            foreach (var project in projects)
-            {
-                if (!result.Projects.Any(p => p.Id == project.Id)) result.Projects.Add(project);
-
-                result.References.Add(new Reference
-                {
-                    From = id,
-                    To = project.Id
-                });
-            }
-
-            if (!_shouldIncludePackages) continue;
-
-            packages = packages.Where(p =>
-            {
-                return _includePackageNamespaces.Any(i => p.Name.ToLower().StartsWith(i))
-                    && !_excludePackageNamespaces.Any(i => p.Name.ToLower().StartsWith(i));
-            }).ToList();
-
-            foreach (var package in packages)
-            {
-                if (!result.Packages.Any(p => p.Id == package.Id)) result.Packages.Add(package);
-
-                result.References.Add(new Reference
-                {
-                    From = id,
-                    To = package.Id
-                });
-            }
+            DiscoverSingleProject(file, result);
         }
+
         var directories = Directory.EnumerateDirectories(folder);
         foreach (var directory in directories)
         {
             Discover(directory, result);
+        }
+    }
+
+    private void DiscoverSingleProject(string file, DiscoveryResult result)
+    {
+        var id = file.Replace(SourceFolder, "");
+        var name = Path.GetFileNameWithoutExtension(file);
+        if (!_includeProjectNamespaces.Any(i => name.ToLower().StartsWith(i))) return;
+        if (_excludeProjectNamespaces.Any(i => name.ToLower().StartsWith(i))) return;
+
+        // add this project.
+        if (!result.Projects.Any(p => p.Id == id))
+            result.Projects.Add(new Project
+            {
+                Id = id,
+                Name = name
+            });
+
+        var (projects, packages) = DiscoverFileReferences(file);
+
+        projects = projects
+                .Where(p =>
+                    _includeProjectNamespaces.Any(i => p.Name.ToLower().StartsWith(i))
+                    && !_excludeProjectNamespaces.Any(i => p.Name.ToLower().StartsWith(i)))
+                .ToList();
+
+        foreach (var project in projects)
+        {
+            if (!result.Projects.Any(p => p.Id == project.Id)) result.Projects.Add(project);
+
+            result.References.Add(new Reference
+            {
+                From = id,
+                To = project.Id
+            });
+        }
+
+        if (!_shouldIncludePackages) return;
+
+        packages = packages.Where(p =>
+        {
+            return _includePackageNamespaces.Any(i => p.Name.ToLower().StartsWith(i))
+                && !_excludePackageNamespaces.Any(i => p.Name.ToLower().StartsWith(i));
+        }).ToList();
+
+        foreach (var package in packages)
+        {
+            if (!result.Packages.Any(p => p.Id == package.Id)) result.Packages.Add(package);
+
+            result.References.Add(new Reference
+            {
+                From = id,
+                To = package.Id
+            });
         }
     }
 
