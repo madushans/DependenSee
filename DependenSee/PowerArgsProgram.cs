@@ -80,11 +80,6 @@ public class PowerArgsProgram
     [ArgShortcut("FReP")]
     public bool FollowReparsePoints { get; set; }
 
-    [ArgDefaultValue(false)]
-    [ArgDescription("Use the present solution file if only a single solution file is found. The list of projects to investigate are read from this file. This is helpful if your repository folder contains projects that are not in use by the solution.")]
-    [ArgShortcut("USiF")]
-    public bool UseSingleSolutionFile { get; set; }
-
     [ArgDefaultValue("")]
     [ArgDescription("Comma separated list of solution file names to analyze. Wildcards not allowed. The list of projects to investigate are read from these files. This is helpful if your repository folder contains projects that are not in use by the solution.")]
     [ArgShortcut("SF")]
@@ -111,8 +106,6 @@ public class PowerArgsProgram
             SourceFolder = SourceFolder,
 
             SolutionFiles = SolutionFiles,
-            UseSingleSolutionFile = UseSingleSolutionFile
-
         };
         var result = service.Discover();
 

@@ -13,7 +13,6 @@ public class ReferenceDiscoveryService
     public bool FollowReparsePoints { get; set; }
     public string ExcludeFolders { get; set; }
     public string SolutionFiles { get; set; }
-    public bool UseSingleSolutionFile { get; set; }
 
     private string[] _includeProjectNamespaces { get; set; }
     private string[] _excludeProjectNamespaces { get; set; }
@@ -47,7 +46,7 @@ public class ReferenceDiscoveryService
             || !string.IsNullOrWhiteSpace(IncludePackageNamespaces)
             || !string.IsNullOrWhiteSpace(ExcludePackageNamespaces);
 
-        if (UseSingleSolutionFile || SolutionFiles.Length > 0)
+        if (SolutionFiles.Length > 0)
         {
             var solutionFiles = GetValidatedSolutionFiles(SourceFolder);
             if (solutionFiles != null && solutionFiles.Count > 0)
@@ -80,18 +79,6 @@ public class ReferenceDiscoveryService
             return null;
         }
 
-        if (solutionFilesInFolder.Count > 1 && UseSingleSolutionFile)
-        {
-            Console.Error.WriteLine($"Multiple solution files found in '{folder}'\r\n\r\n");
-            return null;
-        }
-
-
-        if (UseSingleSolutionFile)
-        {
-            return new List<string> { solutionFilesInFolder[0] };
-        }
-
         var foundSolutionFiles = (from sfif in solutionFilesInFolder
                                   from sf in _solutionFileNames
                                   where sfif.EndsWith(sf, StringComparison.OrdinalIgnoreCase)
@@ -106,7 +93,7 @@ public class ReferenceDiscoveryService
         return foundSolutionFiles;
     }
 
-    private List<String> GetSolutionFilesInFolder(string folder)
+    private List<string> GetSolutionFilesInFolder(string folder)
     {
         var info = new DirectoryInfo(folder);
         return (from fileInfo in info.GetFiles("*.sln")
