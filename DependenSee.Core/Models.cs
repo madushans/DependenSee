@@ -9,7 +9,7 @@ public class DiscoveryResult
 
 public class Project
 {
-    public  string Id { get; set; }
+    public string Id { get; set; }
     public string Name { get; set; }
 }
 public class Package
