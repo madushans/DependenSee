@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <IsPackable>true</IsPackable>
+        <PackageOutputPath>../bin/nupkg</PackageOutputPath>
+        <Version>2.2.1</Version>
+    </PropertyGroup>
+    <PropertyGroup>      
+        <Authors>Madushan</Authors>
+        <Description>Dotnet Library to export project and package dependencies.</Description>
+        <PackageTags>dependency, visualizer, dependensee</PackageTags>
+        <RepositoryUrl>https://github.com/madushans/DependenSee</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/madushans/DependenSee</PackageProjectUrl>
+    </PropertyGroup>
+</Project>

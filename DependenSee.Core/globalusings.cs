@@ -1,0 +1,10 @@
+global using System.CodeDom.Compiler;
+global using System.IO;
+global using System.Collections.Generic;
+global using System;
+global using System.Net;
+global using System.Reflection;
+global using System.Xml.Serialization;
+global using System.Linq;
+global using System.Xml;
+global using System.Text.Json;

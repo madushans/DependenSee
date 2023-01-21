@@ -1,4 +1,6 @@
-﻿namespace DependenSee;
+﻿using DependenSee.Library;
+
+namespace DependenSee;
 
 public enum OutputTypes
 {
@@ -92,9 +94,6 @@ public class PowerArgsProgram
 
             ExcludeFolders = ExcludeFolders,
             FollowReparsePoints = FollowReparsePoints,
-
-            OutputPath = OutputPath,
-            OutputType = OutputType,
 
             SourceFolder = SourceFolder,
 

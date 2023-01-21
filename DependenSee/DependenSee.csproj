@@ -6,8 +6,8 @@
 
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>DependenSee</ToolCommandName>
-    <PackageOutputPath>./bin/nupkg</PackageOutputPath>
-    <Version>2.2.0</Version>
+    <PackageOutputPath>../bin/nupkg</PackageOutputPath>
+    <Version>2.2.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,5 +31,9 @@
 
   <ItemGroup>
     <None Include="LICENSE.txt" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DependenSee.Core\DependenSee.Core.csproj" />
   </ItemGroup>
 </Project>

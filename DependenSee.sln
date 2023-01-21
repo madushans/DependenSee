@@ -5,6 +5,17 @@ VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DependenSee", "DependenSee\DependenSee.csproj", "{6C4DA9BF-3DEC-4794-8E63-3F066A0C7361}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DependenSee.Core", "DependenSee.Core\DependenSee.Core.csproj", "{C61891FA-4ACB-421C-9D0D-093AAA166731}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFolder", "SolutionFolder", "{BBE4D3AC-68B2-46EE-9120-DFD93E780100}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		README.md = README.md
+		azure-pipelines.yml = azure-pipelines.yml
+		sample-html-output.html = sample-html-output.html
+		sample-output.png = sample-output.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +26,10 @@ Global
 		{6C4DA9BF-3DEC-4794-8E63-3F066A0C7361}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C4DA9BF-3DEC-4794-8E63-3F066A0C7361}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C4DA9BF-3DEC-4794-8E63-3F066A0C7361}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C61891FA-4ACB-421C-9D0D-093AAA166731}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C61891FA-4ACB-421C-9D0D-093AAA166731}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C61891FA-4ACB-421C-9D0D-093AAA166731}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C61891FA-4ACB-421C-9D0D-093AAA166731}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

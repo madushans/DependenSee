@@ -1,4 +1,7 @@
-﻿namespace DependenSee;
+﻿using DependenSee.Core;
+using DependenSee.Library;
+
+namespace DependenSee;
 public static class GraphvizSerializer
 {
     const string ProjectBackgroundColor = "#00cc22";

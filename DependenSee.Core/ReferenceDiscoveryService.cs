@@ -1,11 +1,11 @@
-﻿namespace DependenSee;
+﻿using DependenSee.Core;
+
+namespace DependenSee.Library;
 
 public class ReferenceDiscoveryService
 {
     public string SourceFolder { get; set; }
-    public string OutputPath { get; set; }
     public bool IncludePackages { get; set; }
-    public OutputTypes OutputType { get; set; }
     public string IncludeProjectNamespaces { get; set; }
     public string ExcludeProjectNamespaces { get; set; }
     public string IncludePackageNamespaces { get; set; }
@@ -70,7 +70,7 @@ public class ReferenceDiscoveryService
         }
         if (info.Attributes.HasFlag(FileAttributes.ReparsePoint) && !FollowReparsePoints)
         {
-            Console.Error.WriteLine($"Skipping scan for reparse point '{folder}'. Set {nameof(PowerArgsProgram.FollowReparsePoints)} flag to follow.\r\n\r\n");
+            Console.Error.WriteLine($"Skipping scan for reparse point '{folder}'. Set {nameof(FollowReparsePoints)} flag to follow.\r\n\r\n");
             return;
         }
 

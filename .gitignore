@@ -362,3 +362,6 @@ MigrationBackup/
 FodyWeavers.xsd
 
 */Properties/launchSettings.json
+
+#Jetbrains folder
+.idea/

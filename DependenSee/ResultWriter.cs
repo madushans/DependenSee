@@ -1,4 +1,7 @@
-﻿namespace DependenSee;
+﻿using DependenSee.Core;
+using DependenSee.Library;
+
+namespace DependenSee;
 
 internal class ResultWriter
 {
