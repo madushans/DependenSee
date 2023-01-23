@@ -26,6 +26,7 @@ public class PowerArgsProgram
     [HelpHook]
     [ArgDescription("Shows help descriptions.")]
     public bool Help { get; set; }
+
     [ArgRequired]
     [ArgPosition(0)]
     [ArgDescription("Root folder (usually solution folder) to look for csproj files recursively.")]
@@ -84,6 +85,12 @@ public class PowerArgsProgram
     [ArgShortcut("FReP")]
     public bool FollowReparsePoints { get; set; }
 
+
+    [ArgDefaultValue("")]
+    [ArgDescription("Comma separated list of solution file names to analyze. Wildcards not allowed. The list of projects to investigate are read from these files. This is helpful if your repository folder contains projects that are not in use by the solution.")]
+    [ArgShortcut("SF")]
+    public string SolutionFiles { get; set; }
+
     public void Main()
     {
         var service = new ReferenceDiscoveryService
@@ -104,8 +111,10 @@ public class PowerArgsProgram
 
             SourceFolder = SourceFolder,
 
+            SolutionFiles = SolutionFiles,
         };
         var result = service.Discover();
+
         new ResultWriter().Write(result, OutputType, OutputPath, HtmlTitle);
     }
 }
