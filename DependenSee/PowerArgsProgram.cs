@@ -68,16 +68,21 @@ public class PowerArgsProgram
     [ArgDescription("Comma separated list of package name prefixes to exclude. Wildcards not allowed. Only the filename is considered, case insensitive. If specified, 'IncludePackages' is overridden to True. This must be a subset of includes to be useful. Ex: 'Microsoft.Logging, Azure' Excludes packages starting with Microsoft.Logging and packages starting with Azure")]
     [ArgShortcut("EPaN")]
     public string ExcludePackageNamespaces { get; set; }
+
     [ArgDefaultValue("")]
     [ArgDescription("Comma Separated list of folders (either absolute paths or relative to SourceFolder) to skip during scan, even if there are references to them from your projects.")]
     [ArgShortcut("EFol")]
     public string ExcludeFolders { get; set; }
 
+    [ArgDefaultValue("")]
+    [ArgDescription("A wildcard (globbing friendly) to skip matching projects during scan, even if there are references to them from your projects.")]
+    [ArgShortcut("EPat")]
+    public string ExcludeProjectsPattern { get; set; }
+
     [ArgDefaultValue(false)]
     [ArgDescription("Set if you want the scan to follow valid reparse points. This is helpful if your project references are relying on symlinks, NTFS junction points .etc.")]
     [ArgShortcut("FReP")]
     public bool FollowReparsePoints { get; set; }
-
 
     public void Main()
     {
@@ -87,6 +92,7 @@ public class PowerArgsProgram
             ExcludeProjectNamespaces = ExcludeProjectNamespaces,
             IncludePackageNamespaces = IncludePackageNamespaces,
             IncludeProjectNamespaces = IncludeProjectNamespaces,
+            ExcludeProjectsPattern = ExcludeProjectsPattern,
 
             IncludePackages = IncludePackages,
 
