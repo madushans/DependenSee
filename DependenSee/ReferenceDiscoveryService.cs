@@ -1,7 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using Microsoft.Extensions.FileSystemGlobbing;
-
-namespace DependenSee;
+﻿namespace DependenSee;
 
 public class ReferenceDiscoveryService
 {
@@ -13,7 +10,6 @@ public class ReferenceDiscoveryService
     public string ExcludeProjectNamespaces { get; set; }
     public string IncludePackageNamespaces { get; set; }
     public string ExcludePackageNamespaces { get; set; }
-    public string ExcludeProjectsPattern { get; set; }
     public bool FollowReparsePoints { get; set; }
     public string ExcludeFolders { get; set; }
 
@@ -21,7 +17,6 @@ public class ReferenceDiscoveryService
     private string[] _excludeProjectNamespaces { get; set; }
     private string[] _includePackageNamespaces { get; set; }
     private string[] _excludePackageNamespaces { get; set; }
-    private Matcher _findProjectsPattern { get; set; }
 
     private bool _shouldIncludePackages { get; set; }
 
@@ -40,19 +35,8 @@ public class ReferenceDiscoveryService
         _includePackageNamespaces = ParseStringToLowercaseStringArray(IncludePackageNamespaces);
         _excludePackageNamespaces = ParseStringToLowercaseStringArray(ExcludePackageNamespaces);
 
-        _findProjectsPattern = new Matcher(StringComparison.OrdinalIgnoreCase)
-            .AddInclude("*.csproj")
-            .AddInclude("*.vbproj");
-
-        if (!string.IsNullOrWhiteSpace(ExcludeProjectsPattern))
-        {
-            _findProjectsPattern = _findProjectsPattern.AddExclude(ExcludeProjectsPattern);
-        }
-
-        if (!_includeProjectNamespaces.Any())
-            _includeProjectNamespaces = new[] { "" };
-        if (!_includePackageNamespaces.Any())
-            _includePackageNamespaces = new[] { "" };
+        if (!_includeProjectNamespaces.Any()) _includeProjectNamespaces = new[] { "" };
+        if (!_includePackageNamespaces.Any()) _includePackageNamespaces = new[] { "" };
         _shouldIncludePackages = IncludePackages
             || !string.IsNullOrWhiteSpace(IncludePackageNamespaces)
             || !string.IsNullOrWhiteSpace(ExcludePackageNamespaces);
@@ -90,16 +74,14 @@ public class ReferenceDiscoveryService
             return;
         }
 
-        var projectFiles = _findProjectsPattern.GetResultsInFullPath(folder).ToArray();
-
+        var projectFiles = Directory.EnumerateFiles(folder, "*.csproj")
+            .Concat(Directory.EnumerateFiles(folder, "*.vbproj"));
         foreach (var file in projectFiles)
         {
             var id = file.Replace(SourceFolder, "");
             var name = Path.GetFileNameWithoutExtension(file);
-            if (!_includeProjectNamespaces.Any(i => name.ToLower().StartsWith(i)))
-                continue;
-            if (_excludeProjectNamespaces.Any(i => name.ToLower().StartsWith(i)))
-                continue;
+            if (!_includeProjectNamespaces.Any(i => name.ToLower().StartsWith(i))) continue;
+            if (_excludeProjectNamespaces.Any(i => name.ToLower().StartsWith(i))) continue;
 
             // add this project.
             if (!result.Projects.Any(p => p.Id == id))
@@ -119,8 +101,7 @@ public class ReferenceDiscoveryService
 
             foreach (var project in projects)
             {
-                if (!result.Projects.Any(p => p.Id == project.Id))
-                    result.Projects.Add(project);
+                if (!result.Projects.Any(p => p.Id == project.Id)) result.Projects.Add(project);
 
                 result.References.Add(new Reference
                 {
@@ -129,8 +110,7 @@ public class ReferenceDiscoveryService
                 });
             }
 
-            if (!_shouldIncludePackages)
-                continue;
+            if (!_shouldIncludePackages) continue;
 
             packages = packages.Where(p =>
             {
@@ -140,8 +120,7 @@ public class ReferenceDiscoveryService
 
             foreach (var package in packages)
             {
-                if (!result.Packages.Any(p => p.Id == package.Id))
-                    result.Packages.Add(package);
+                if (!result.Packages.Any(p => p.Id == package.Id)) result.Packages.Add(package);
 
                 result.References.Add(new Reference
                 {
@@ -195,8 +174,7 @@ public class ReferenceDiscoveryService
 
     private string GetFolderExclusionFor(string fullFolderPath)
     {
-        if (string.IsNullOrWhiteSpace(ExcludeFolders))
-            return null;
+        if (string.IsNullOrWhiteSpace(ExcludeFolders)) return null;
 
         var allRules = ExcludeFolders
             .Split(',')

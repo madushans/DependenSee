@@ -1,8 +1,8 @@
 ﻿namespace DependenSee;
 public static class GraphvizSerializer
 {
-    private const string ProjectBackgroundColor = "#00cc22";
-    private const string PackageBackgroundColor = "#22aaee";
+    const string ProjectBackgroundColor = "#00cc22";
+    const string PackageBackgroundColor = "#22aaee";
 
     public static string ToString(DiscoveryResult discoveryResult)
     {
