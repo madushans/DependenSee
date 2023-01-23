@@ -75,16 +75,21 @@ public class PowerArgsProgram
     [ArgShortcut("EFol")]
     public string ExcludeFolders { get; set; }
 
+    [ArgDefaultValue("")]
+    [ArgDescription("A wildcard (globbing friendly) to skip matching projects during scan, even if there are references to them from your projects.")]
+    [ArgShortcut("EPat")]
+    public string ExcludeProjectsPattern { get; set; }
+
     [ArgDefaultValue(false)]
     [ArgDescription("Set if you want the scan to follow valid reparse points. This is helpful if your project references are relying on symlinks, NTFS junction points .etc.")]
     [ArgShortcut("FReP")]
     public bool FollowReparsePoints { get; set; }
 
+
     [ArgDefaultValue("")]
     [ArgDescription("Comma separated list of solution file names to analyze. Wildcards not allowed. The list of projects to investigate are read from these files. This is helpful if your repository folder contains projects that are not in use by the solution.")]
     [ArgShortcut("SF")]
     public string SolutionFiles { get; set; }
-
 
     public void Main()
     {
@@ -94,6 +99,7 @@ public class PowerArgsProgram
             ExcludeProjectNamespaces = ExcludeProjectNamespaces,
             IncludePackageNamespaces = IncludePackageNamespaces,
             IncludeProjectNamespaces = IncludeProjectNamespaces,
+            ExcludeProjectsPattern = ExcludeProjectsPattern,
 
             IncludePackages = IncludePackages,
 
