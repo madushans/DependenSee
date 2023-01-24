@@ -1,19 +1,36 @@
-﻿using System.Diagnostics;
-using System.Xml;
-using Microsoft.CSharp;
+﻿namespace DependenSee.Api;
 
-namespace DependenSee.Api;
-
+/// <summary>
+/// Entry point for discovering your dependencies.
+/// </summary>
 public class DiscoveryService
 {
     private readonly IMsBuildFileParser msBuildFileParser;
     private readonly IDiscoveryLogger logger;
 
+    /// <summary>
+    /// Constructs a new <see cref="DiscoveryService"/> that can 
+    /// discover the dependencies of your solution.
+    /// </summary>
+    /// <param name="msBuildFileParser">
+    /// Implementation that can parse an MSBuild file. 
+    /// Leave as <see langword="null"/> to use the default implementation
+    /// </param>
+    /// <param name="logger">
+    /// Implementation of a logger. Leaving as <see langword="null"/> will
+    /// use the <see cref="NullDiscoveryLogger"/> which will omit logging.
+    /// </param>
     public DiscoveryService(IMsBuildFileParser? msBuildFileParser = null, IDiscoveryLogger? logger = null)
     {
         this.logger = logger ?? new NullDiscoveryLogger();
         this.msBuildFileParser = msBuildFileParser  ?? new MsBuildFileParser(this.logger);
     }
+
+    /// <summary>
+    /// Discovers dependencies in a solution folder.
+    /// </summary>
+    /// <param name="request"></param>
+    /// <exception cref="ArgumentNullException"><see cref="DiscoveryRequest.SourceFolder"/> must be specified</exception>
     public DiscoveryResult Discover(DiscoveryRequest request)
     {
         if (string.IsNullOrWhiteSpace(request.SourceFolder))

@@ -25,7 +25,7 @@
   <PropertyGroup>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <Authors>Madushan</Authors>
-    <Description>Dotnet Tool to visualize or export project and package dependencies.</Description>
+    <Description>Dotnet Tool to visualize or export project and package dependencies. Core API also available as a nuget package DependenSee.Api</Description>
     <PackageTags>dependency, visualizer, dependensee</PackageTags>
     <RepositoryUrl>https://github.com/madushans/DependenSee</RepositoryUrl>
     <PackageProjectUrl>https://github.com/madushans/DependenSee</PackageProjectUrl>
