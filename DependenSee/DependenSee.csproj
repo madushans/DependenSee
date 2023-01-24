@@ -10,6 +10,8 @@
     <Version>2.2.0</Version>
   </PropertyGroup>
 
+
+
   <ItemGroup>
     <Content Include="HtmlResultTemplate.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -32,4 +34,10 @@
   <ItemGroup>
     <None Include="LICENSE.txt" Pack="true" PackagePath="" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DependenSee.Api\DependenSee.Api.csproj" />
+  </ItemGroup>
+
+
 </Project>

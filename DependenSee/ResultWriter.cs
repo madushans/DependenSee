@@ -1,11 +1,13 @@
-﻿namespace DependenSee;
+﻿using DependenSee.Api;
+
+namespace DependenSee;
 
 internal class ResultWriter
 {
     private const string HtmlTemplateToken = "'{#SOURCE_TOKEN#}'";
     private const string HtmlTitleToken = "{#TITLE_TOKEN#}";
     private const string HtmlTemplateName = "HtmlResultTemplate.html";
-    private JsonSerializerOptions _JsonSerializerOptions = new JsonSerializerOptions() { WriteIndented = true };
+    private readonly JsonSerializerOptions _JsonSerializerOptions = new() { WriteIndented = true };
 
     internal void Write(DiscoveryResult result, OutputTypes type, string outputPath, string htmlTitle)
     {

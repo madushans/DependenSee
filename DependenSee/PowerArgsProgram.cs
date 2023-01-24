@@ -1,4 +1,6 @@
-﻿namespace DependenSee;
+﻿using DependenSee.Api;
+
+namespace DependenSee;
 
 public enum OutputTypes
 {
@@ -81,25 +83,40 @@ public class PowerArgsProgram
 
     public void Main()
     {
-        var service = new ReferenceDiscoveryService
+        var service = new DiscoveryService(logger: new ConsoleLogger());
+
+        var request = new DiscoveryRequest
         {
-            ExcludePackageNamespaces = ExcludePackageNamespaces,
-            ExcludeProjectNamespaces = ExcludeProjectNamespaces,
-            IncludePackageNamespaces = IncludePackageNamespaces,
-            IncludeProjectNamespaces = IncludeProjectNamespaces,
-
-            IncludePackages = IncludePackages,
-
-            ExcludeFolders = ExcludeFolders,
-            FollowReparsePoints = FollowReparsePoints,
-
-            OutputPath = OutputPath,
-            OutputType = OutputType,
-
             SourceFolder = SourceFolder,
-
+            ExcludeFolders = string.IsNullOrWhiteSpace(ExcludeFolders)? Array.Empty<string>() : ExcludeFolders.Split(';'),
+            FollowReparsePoints = FollowReparsePoints
         };
-        var result = service.Discover();
+
+        var result = service.Discover(request);
         new ResultWriter().Write(result, OutputType, OutputPath, HtmlTitle);
+    }
+}
+
+public class ConsoleLogger : IDiscoveryLogger
+{
+    public void LogError(string message)
+    {
+        var revertTo = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine(message);
+        Console.ForegroundColor = revertTo;
+    }
+
+    public void LogInfo(string message)
+    {
+        Console.WriteLine(message);
+    }
+
+    public void LogWarn(string message)
+    {
+        var revertTo = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.WriteLine(message);
+        Console.ForegroundColor = revertTo;
     }
 }
