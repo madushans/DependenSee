@@ -55,25 +55,47 @@ namespace DependenSee.Api;
  */
 
 
-public record class MsBuildFile(List<Project> Projects, List<Package> Packages);
+/// <summary>
+/// Representation of an MSBuild file
+/// </summary>
+/// <param name="ProjectName">Name of the project. This is usually the filename without the extension</param>
+/// <param name="Id">
+/// Uniquely identifies this project in the result and is used to draw the references. 
+/// This ID must match the <see cref="SolutionFile.ProjectIds"/> if this project is 
+/// referenced in a given <see cref="SolutionFile"/>
+/// </param>
+/// <param name="Path">Path of this MSBuild file relative to <see cref="DiscoveryRequest.SourceFolder"/></param>
+/// <param name="Projects">Other projects this MSBuild file references</param>
+/// <param name="Packages">Other packages this MSBuild file references</param>
+public record class MSBuildFile(string ProjectName,
+                                string Id,
+                                string Path,
+                                List<Project> Projects,
+                                List<Package> Packages);
 
-public interface IMsBuildFileParser
+/// <summary>
+/// Implementation should parse a given MSBuild file,
+/// and create a <see cref="MSBuildFile"/>
+/// </summary>
+public interface IMSBuildFileParser
 {
-    MsBuildFile Parse(string msBuildFilePath,
-                      DiscoveryRequest request);
+    /// <summary>
+    /// Implementation should parse a given MSBuild file,
+    /// and create a <see cref="MSBuildFile"/>
+    /// </summary>
+    MSBuildFile Parse(string msBuildFilePath, DiscoveryRequest request);
 }
 
-internal class MsBuildFileParser : IMsBuildFileParser
+internal class MSBuildFileParser : IMSBuildFileParser
 {
     private readonly IDiscoveryLogger logger;
 
-    public MsBuildFileParser(IDiscoveryLogger logger)
+    public MSBuildFileParser(IDiscoveryLogger logger)
     {
         this.logger = logger;
     }
 
-    public MsBuildFile Parse(string msBuildFilePath,
-                                    DiscoveryRequest request)
+    public MSBuildFile Parse(string msBuildFilePath, DiscoveryRequest request)
     {
         var xml = new XmlDocument();
         xml.Load(msBuildFilePath);
@@ -82,7 +104,10 @@ internal class MsBuildFileParser : IMsBuildFileParser
         if (basePath is null)
             throw new Exception($"Could not get base path for {msBuildFilePath}. This may be because this does not have a parent directory, which is unexpected.");
 
-        return new MsBuildFile(
+        return new MSBuildFile(
+            ProjectName: Path.GetFileNameWithoutExtension(msBuildFilePath),
+            Id: Path.GetRelativePath(relativeTo: request.SourceFolder, path: msBuildFilePath),
+            Path: Path.GetRelativePath(relativeTo: request.SourceFolder, path: msBuildFilePath),
             Projects: DiscoverProjectRefrences(xml,
                                                 basePath,
                                                 msBuildFilePath,
@@ -124,7 +149,7 @@ internal class MsBuildFileParser : IMsBuildFileParser
 
             if (!fullPath.ToLower().StartsWith(request.SourceFolder.ToLower()))
             {
-                logger.LogWarn($"Found referenced project '{fullPath}' outside of provided {nameof(request.SourceFolder)}. Run DependenSee on the parent folder of all your projects to prevent duplicates and/or missing projects from the output.");
+                logger.LogWarn($"Found referenced project '{fullPath}' from {msBuildFilePath} outside of provided {nameof(request.SourceFolder)}. Run DependenSee on the parent folder of all your projects to prevent duplicates and/or missing projects from the output.");
             }
 
             // As a privacy measure, we attempt to remove the SourceFolder prefix.
@@ -133,6 +158,7 @@ internal class MsBuildFileParser : IMsBuildFileParser
             var localizedPath = Path.GetRelativePath(relativeTo: request.SourceFolder, path: fullPath);
 
             projects.Add(new Project(Id: localizedPath,
+                                          Path: localizedPath,
                                           Name: filename));
         }
         return projects;
@@ -155,7 +181,8 @@ internal class MsBuildFileParser : IMsBuildFileParser
 
         if (packageReferenceNodes is null)
         {
-            logger.LogError($"Could not resolve package references in '{msBuildFilePath}'. Please open an issue in github with this project file to resolve this.");
+            logger.LogError($"Could not resolve package references in '{msBuildFilePath}'. " +
+                $"Please open an issue in github with this project file to investigate this issue.");
             return packages;
         }
 
@@ -166,9 +193,27 @@ internal class MsBuildFileParser : IMsBuildFileParser
 
             if (packageName is null)
             {
-                logger.LogError($"Project file '{msBuildFilePath}' has a '{PackageReference}' node or a '{Reference}' without an '{Include}' or '{Update}' attribute. Please open an issue in github with this project file to resolve this.");
+                logger.LogError($"Project file '{msBuildFilePath}' has a '{PackageReference}' node " +
+                    $"or a '{Reference}' without an '{Include}' or '{Update}' attribute. " +
+                    $"Please open an issue in github with this project file to investigate this issue.");
                 continue;
             }
+
+            // we can also read the version using node?.Attributes?["Version"]?.Value;
+            // however this opens a set of problems I'm not willing to deal with yet.
+            // namely each project could require a different version of the same package,
+            // or request an 'Update' of its version, or it could be updated via a build.props file.
+            // The version could also be a floating version pattern.
+            // see https://learn.microsoft.com/en-us/nuget/concepts/dependency-resolution#floating-versions
+            // While we can probably spend time and effort to provide this information, replicating
+            // nuget's dependency resolution algorithm is not productive for us.
+
+            // Especially since this is mainly useful to consolidate versions and it is done well
+            // by Visual Studio's Right click menu of a Solution > "Manage Nuget Packages For Solution"
+            // option and selecting "Consolidate" tab on the solution.
+            // Edge case is to have multiple solutions that has different projects on different
+            // solutions, but this is unlikely to be much of a problem, since while is may be a bit
+            // time consuming, each solution can be opened and versions consolidated.
 
             packages.Add(new Package(Id: packageName,
                                           Name: packageName));
