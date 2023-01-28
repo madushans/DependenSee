@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>DependenSee</id>
+    <version>2.1.0</version>
+    <authors>Madushan</authors>
+    <license type="file">LICENSE.txt</license>
+    <licenseUrl>https://aka.ms/deprecateLicenseUrl</licenseUrl>
+    <projectUrl>https://github.com/madushans/DependenSee</projectUrl>
+    <description>Dotnet Tool to visualize or export project and package dependencies.</description>
+    <tags>dependency, visualizer, dependensee</tags>
+    <packageTypes>
+      <packageType name="DotnetTool" />
+    </packageTypes>
+    <repository url="https://github.com/madushans/DependenSee" />
+    <contentFiles>
+      <files include="any/net6.0/HtmlResultTemplate.html" buildAction="Content" />
+    </contentFiles>
+  </metadata>
+  <files>
+    <file src="C:\Repos\DependenSee\DependenSee\obj\DotnetToolSettings.xml" target="tools\net6.0\any\DotnetToolSettings.xml" />
+    <file src="C:\Repos\DependenSee\DependenSee\bin\Debug\net6.0\publish\HtmlResultTemplate.html" target="tools\net6.0\any\HtmlResultTemplate.html" />
+    <file src="C:\Repos\DependenSee\DependenSee\bin\Debug\net6.0\publish\DependenSee.dll" target="tools\net6.0\any\DependenSee.dll" />
+    <file src="C:\Repos\DependenSee\DependenSee\bin\Debug\net6.0\publish\DependenSee.deps.json" target="tools\net6.0\any\DependenSee.deps.json" />
+    <file src="C:\Repos\DependenSee\DependenSee\bin\Debug\net6.0\publish\DependenSee.runtimeconfig.json" target="tools\net6.0\any\DependenSee.runtimeconfig.json" />
+    <file src="C:\Repos\DependenSee\DependenSee\bin\Debug\net6.0\publish\DependenSee.pdb" target="tools\net6.0\any\DependenSee.pdb" />
+    <file src="C:\Repos\DependenSee\DependenSee\bin\Debug\net6.0\publish\Newtonsoft.Json.dll" target="tools\net6.0\any\Newtonsoft.Json.dll" />
+    <file src="C:\Repos\DependenSee\DependenSee\bin\Debug\net6.0\publish\PowerArgs.dll" target="tools\net6.0\any\PowerArgs.dll" />
+    <file src="C:\Repos\DependenSee\DependenSee\HtmlResultTemplate.html" target="content\HtmlResultTemplate.html" />
+    <file src="C:\Repos\DependenSee\DependenSee\HtmlResultTemplate.html" target="contentFiles\any\net6.0\HtmlResultTemplate.html" />
+    <file src="C:\Repos\DependenSee\DependenSee\LICENSE.txt" target="LICENSE.txt" />
+  </files>
+</package>

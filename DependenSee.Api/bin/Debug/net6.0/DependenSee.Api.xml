@@ -1,0 +1,413 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DependenSee.Api</name>
+    </assembly>
+    <members>
+        <member name="T:DependenSee.Api.IDiscoveryLogger">
+            <summary>
+            Logger that can write different severity messages.
+            During discovery, different messages are sent via the logger
+            describing its process, which provides insights to the 
+            discovery process and aid in troubleshooting in the event 
+            of a failure or missing/incorrect results.
+            </summary>
+        </member>
+        <member name="M:DependenSee.Api.IDiscoveryLogger.LogInfo(System.String)">
+            <summary>
+            Writes an info message
+            </summary>
+        </member>
+        <member name="M:DependenSee.Api.IDiscoveryLogger.LogWarn(System.String)">
+            <summary>
+            Writes a warning message.
+            </summary>
+        </member>
+        <member name="M:DependenSee.Api.IDiscoveryLogger.LogError(System.String)">
+            <summary>
+            Writes an error message
+            </summary>
+        </member>
+        <member name="T:DependenSee.Api.NullDiscoveryLogger">
+            <summary>
+            Logger that ignores all messages. This is used as the default
+            if no other logger is provided.
+            </summary>
+        </member>
+        <member name="M:DependenSee.Api.NullDiscoveryLogger.LogInfo(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:DependenSee.Api.NullDiscoveryLogger.LogWarn(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:DependenSee.Api.NullDiscoveryLogger.LogError(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="T:DependenSee.Api.DiscoveryService">
+            <summary>
+            Entry point for discovering your dependencies.
+            </summary>
+        </member>
+        <member name="M:DependenSee.Api.DiscoveryService.#ctor(DependenSee.Api.IMSBuildFileParser,DependenSee.Api.ISolutionFileParser,DependenSee.Api.IDiscoveryLogger)">
+            <summary>
+            Constructs a new <see cref="T:DependenSee.Api.DiscoveryService"/> that can 
+            discover the dependencies of your solution.
+            </summary>
+            <param name="msBuildFileParser">
+            Implementation that can parse an MSBuild file. 
+            Leave as <see langword="null"/> to use the default implementation
+            of <see cref="T:DependenSee.Api.MSBuildFileParser"/>
+            </param>
+            <param name="solutionFileParser">
+            Implementation that can parse a solution file. 
+            Leave as <see langword="null"/> to use the default implementation
+            of <see cref="T:DependenSee.Api.SolutionFileParser"/>
+            </param>
+            <param name="logger">
+            Implementation of a logger. Leaving as <see langword="null"/> will
+            use the <see cref="T:DependenSee.Api.NullDiscoveryLogger"/> which will omit logging.
+            </param>
+        </member>
+        <member name="M:DependenSee.Api.DiscoveryService.Discover(DependenSee.Api.DiscoveryRequest)">
+            <summary>
+            Discovers dependencies in a solution folder.
+            </summary>
+            <param name="request"></param>
+            <exception cref="T:System.ArgumentNullException"><see cref="P:DependenSee.Api.DiscoveryRequest.SourceFolder"/> must be specified</exception>
+        </member>
+        <member name="T:DependenSee.Api.DiscoveryRequest">
+            <summary>
+            Represents a request details for Discovery
+            </summary>
+        </member>
+        <member name="P:DependenSee.Api.DiscoveryRequest.SourceFolder">
+            <summary>
+            Root folder where the discovery should start. This is required.
+            </summary>
+        </member>
+        <member name="P:DependenSee.Api.DiscoveryRequest.ExcludeFolders">
+            <summary>
+            List of folder paths that should be excluded from discovery run.
+            This can be used if you have a folder that does not have MSBuild projects and should not be inspected, or to avoid folder(s)
+            that DependenSee has issues inspecting.
+            Note that if a project in a folder that is not excluded, has a reference to a project that is in an excluded folder, 
+            it will be still be included. This only excludes enumerating these folders for MSBuild files.
+            </summary>
+        </member>
+        <member name="P:DependenSee.Api.DiscoveryRequest.FollowReparsePoints">
+            <summary>
+            Whether to follow filesystem reparse points. These include but not limited to NTFS junction points and symlinks.
+            By default these are not followed since this can cause the discovery to follow filesystem loops.
+            If you have reparse points you would like to follow, but some of them has loops that should not be followed, 
+            you can turn this on, and exclude the ones that has loops with <see cref="P:DependenSee.Api.DiscoveryRequest.ExcludeFolders"/>
+            
+            One known example is when your solution folder contains node_modules managed by pnpm.
+            See https://github.com/madushans/DependenSee/issues/20
+            </summary>
+        </member>
+        <member name="T:DependenSee.Api.DiscoveryResult">
+            <summary>
+            Result of a discovery run
+            </summary>
+        </member>
+        <member name="P:DependenSee.Api.DiscoveryResult.Projects">
+            <summary>
+            Details of a discovered projects.
+            </summary>
+        </member>
+        <member name="P:DependenSee.Api.DiscoveryResult.Packages">
+            <summary>
+            Details of a discovered packages that are referenced by discovered <see cref="P:DependenSee.Api.DiscoveryResult.Projects"/>.
+            </summary>
+        </member>
+        <member name="P:DependenSee.Api.DiscoveryResult.References">
+            <summary>
+            Details of how projects and packages are referenced
+            </summary>
+        </member>
+        <member name="P:DependenSee.Api.DiscoveryResult.Solutions">
+            <summary>
+            Details of how discovered solutions and what projects they reference.
+            </summary>
+        </member>
+        <member name="T:DependenSee.Api.Project">
+            <param name="Id">
+            Unique identifier for this project. This is 
+            generated and serves only to uniquely identify this project. 
+            This is usually a partial/relative file path, however it is not
+            guaranteed to be so. If you want the path, use <paramref name="Path"/>.
+            </param>
+            <param name="Name">
+            Name of the project, usually derived from the MSBuild filename.
+            </param>
+            <param name="Path">
+            Relative path of the project file, relative to the 
+            <see cref="P:DependenSee.Api.DiscoveryRequest.SourceFolder"/>
+            </param>
+        </member>
+        <member name="M:DependenSee.Api.Project.#ctor(System.String,System.String,System.String)">
+            <param name="Id">
+            Unique identifier for this project. This is 
+            generated and serves only to uniquely identify this project. 
+            This is usually a partial/relative file path, however it is not
+            guaranteed to be so. If you want the path, use <paramref name="Path"/>.
+            </param>
+            <param name="Name">
+            Name of the project, usually derived from the MSBuild filename.
+            </param>
+            <param name="Path">
+            Relative path of the project file, relative to the 
+            <see cref="P:DependenSee.Api.DiscoveryRequest.SourceFolder"/>
+            </param>
+        </member>
+        <member name="P:DependenSee.Api.Project.Id">
+            <summary>
+            Unique identifier for this project. This is 
+            generated and serves only to uniquely identify this project. 
+            This is usually a partial/relative file path, however it is not
+            guaranteed to be so. If you want the path, use <paramref name="Path"/>.
+            </summary>
+        </member>
+        <member name="P:DependenSee.Api.Project.Name">
+            <summary>
+            Name of the project, usually derived from the MSBuild filename.
+            </summary>
+        </member>
+        <member name="P:DependenSee.Api.Project.Path">
+            <summary>
+            Relative path of the project file, relative to the 
+            <see cref="P:DependenSee.Api.DiscoveryRequest.SourceFolder"/>
+            </summary>
+        </member>
+        <member name="T:DependenSee.Api.Package">
+            <param name="Id">
+            Unique identifier for this package. This is usually the 
+            package name, but is not guaranteed to be so.
+            </param>
+            <param name="Name">
+            Name of the package.
+            </param>
+        </member>
+        <member name="M:DependenSee.Api.Package.#ctor(System.String,System.String)">
+            <param name="Id">
+            Unique identifier for this package. This is usually the 
+            package name, but is not guaranteed to be so.
+            </param>
+            <param name="Name">
+            Name of the package.
+            </param>
+        </member>
+        <member name="P:DependenSee.Api.Package.Id">
+            <summary>
+            Unique identifier for this package. This is usually the 
+            package name, but is not guaranteed to be so.
+            </summary>
+        </member>
+        <member name="P:DependenSee.Api.Package.Name">
+            <summary>
+            Name of the package.
+            </summary>
+        </member>
+        <member name="T:DependenSee.Api.Reference">
+            <summary>
+            Description of a reference between a project and another
+            project or a package.
+            </summary>
+            <param name="From">
+            Reference origination. This is an <see cref="P:DependenSee.Api.Project.Id"/>
+            of a <see cref="T:DependenSee.Api.Project"/>
+            </param>
+            <param name="To">
+            Reference destination. This is an <see cref="P:DependenSee.Api.Project.Id"/>
+            of a <see cref="T:DependenSee.Api.Project"/> or an <see cref="P:DependenSee.Api.Package.Id"/>
+            of a <see cref="T:DependenSee.Api.Package"/>
+            </param>
+        </member>
+        <member name="M:DependenSee.Api.Reference.#ctor(System.String,System.String)">
+            <summary>
+            Description of a reference between a project and another
+            project or a package.
+            </summary>
+            <param name="From">
+            Reference origination. This is an <see cref="P:DependenSee.Api.Project.Id"/>
+            of a <see cref="T:DependenSee.Api.Project"/>
+            </param>
+            <param name="To">
+            Reference destination. This is an <see cref="P:DependenSee.Api.Project.Id"/>
+            of a <see cref="T:DependenSee.Api.Project"/> or an <see cref="P:DependenSee.Api.Package.Id"/>
+            of a <see cref="T:DependenSee.Api.Package"/>
+            </param>
+        </member>
+        <member name="P:DependenSee.Api.Reference.From">
+            <summary>
+            Reference origination. This is an <see cref="P:DependenSee.Api.Project.Id"/>
+            of a <see cref="T:DependenSee.Api.Project"/>
+            </summary>
+        </member>
+        <member name="P:DependenSee.Api.Reference.To">
+            <summary>
+            Reference destination. This is an <see cref="P:DependenSee.Api.Project.Id"/>
+            of a <see cref="T:DependenSee.Api.Project"/> or an <see cref="P:DependenSee.Api.Package.Id"/>
+            of a <see cref="T:DependenSee.Api.Package"/>
+            </summary>
+        </member>
+        <member name="T:DependenSee.Api.Solution">
+            <param name="Id">
+            Unique identifier for this solution. 
+            This is usually a partial/relative file path, however it is not
+            guaranteed to be so. If you want the path, use <paramref name="Path"/>.
+            </param>
+            <param name="Name">
+            Name of the solution, usually derived from the solution filename.
+            </param>
+            <param name="Path">
+            Relative path of the solution file, relative to the 
+            <see cref="P:DependenSee.Api.DiscoveryRequest.SourceFolder"/>
+            </param>
+            <param name="ProjectIds">IDs of projects this solution references</param>
+        </member>
+        <member name="M:DependenSee.Api.Solution.#ctor(System.String,System.String,System.String,System.Collections.Generic.List{System.String})">
+            <param name="Id">
+            Unique identifier for this solution. 
+            This is usually a partial/relative file path, however it is not
+            guaranteed to be so. If you want the path, use <paramref name="Path"/>.
+            </param>
+            <param name="Name">
+            Name of the solution, usually derived from the solution filename.
+            </param>
+            <param name="Path">
+            Relative path of the solution file, relative to the 
+            <see cref="P:DependenSee.Api.DiscoveryRequest.SourceFolder"/>
+            </param>
+            <param name="ProjectIds">IDs of projects this solution references</param>
+        </member>
+        <member name="P:DependenSee.Api.Solution.Id">
+            <summary>
+            Unique identifier for this solution. 
+            This is usually a partial/relative file path, however it is not
+            guaranteed to be so. If you want the path, use <paramref name="Path"/>.
+            </summary>
+        </member>
+        <member name="P:DependenSee.Api.Solution.Name">
+            <summary>
+            Name of the solution, usually derived from the solution filename.
+            </summary>
+        </member>
+        <member name="P:DependenSee.Api.Solution.Path">
+            <summary>
+            Relative path of the solution file, relative to the 
+            <see cref="P:DependenSee.Api.DiscoveryRequest.SourceFolder"/>
+            </summary>
+        </member>
+        <member name="P:DependenSee.Api.Solution.ProjectIds">
+            <summary>IDs of projects this solution references</summary>
+        </member>
+        <member name="T:DependenSee.Api.MSBuildFile">
+            <summary>
+            Representation of an MSBuild file
+            </summary>
+            <param name="ProjectName">Name of the project. This is usually the filename without the extension</param>
+            <param name="Id">
+            Uniquely identifies this project in the result and is used to draw the references. 
+            This ID must match the <see cref="P:DependenSee.Api.SolutionFile.ProjectIds"/> if this project is 
+            referenced in a given <see cref="T:DependenSee.Api.SolutionFile"/>
+            </param>
+            <param name="Path">Path of this MSBuild file relative to <see cref="P:DependenSee.Api.DiscoveryRequest.SourceFolder"/></param>
+            <param name="Projects">Other projects this MSBuild file references</param>
+            <param name="Packages">Other packages this MSBuild file references</param>
+        </member>
+        <member name="M:DependenSee.Api.MSBuildFile.#ctor(System.String,System.String,System.String,System.Collections.Generic.List{DependenSee.Api.Project},System.Collections.Generic.List{DependenSee.Api.Package})">
+            <summary>
+            Representation of an MSBuild file
+            </summary>
+            <param name="ProjectName">Name of the project. This is usually the filename without the extension</param>
+            <param name="Id">
+            Uniquely identifies this project in the result and is used to draw the references. 
+            This ID must match the <see cref="P:DependenSee.Api.SolutionFile.ProjectIds"/> if this project is 
+            referenced in a given <see cref="T:DependenSee.Api.SolutionFile"/>
+            </param>
+            <param name="Path">Path of this MSBuild file relative to <see cref="P:DependenSee.Api.DiscoveryRequest.SourceFolder"/></param>
+            <param name="Projects">Other projects this MSBuild file references</param>
+            <param name="Packages">Other packages this MSBuild file references</param>
+        </member>
+        <member name="P:DependenSee.Api.MSBuildFile.ProjectName">
+            <summary>Name of the project. This is usually the filename without the extension</summary>
+        </member>
+        <member name="P:DependenSee.Api.MSBuildFile.Id">
+            <summary>
+            Uniquely identifies this project in the result and is used to draw the references. 
+            This ID must match the <see cref="P:DependenSee.Api.SolutionFile.ProjectIds"/> if this project is 
+            referenced in a given <see cref="T:DependenSee.Api.SolutionFile"/>
+            </summary>
+        </member>
+        <member name="P:DependenSee.Api.MSBuildFile.Path">
+            <summary>Path of this MSBuild file relative to <see cref="P:DependenSee.Api.DiscoveryRequest.SourceFolder"/></summary>
+        </member>
+        <member name="P:DependenSee.Api.MSBuildFile.Projects">
+            <summary>Other projects this MSBuild file references</summary>
+        </member>
+        <member name="P:DependenSee.Api.MSBuildFile.Packages">
+            <summary>Other packages this MSBuild file references</summary>
+        </member>
+        <member name="T:DependenSee.Api.IMSBuildFileParser">
+            <summary>
+            Implementation should parse a given MSBuild file,
+            and create a <see cref="T:DependenSee.Api.MSBuildFile"/>
+            </summary>
+        </member>
+        <member name="M:DependenSee.Api.IMSBuildFileParser.Parse(System.String,DependenSee.Api.DiscoveryRequest)">
+            <summary>
+            Implementation should parse a given MSBuild file,
+            and create a <see cref="T:DependenSee.Api.MSBuildFile"/>
+            </summary>
+        </member>
+        <member name="T:DependenSee.Api.SolutionFile">
+            <summary>
+            Representation of a solution file
+            </summary>
+            <param name="Name">Name of the solution. This is usually the filename without the extension</param>
+            <param name="Id">
+            Uniquely identifies this solution in the result and is used to draw the references. 
+            </param>
+            <param name="Path">Path of this solution file relative to <see cref="P:DependenSee.Api.DiscoveryRequest.SourceFolder"/></param>
+            <param name="ProjectIds">Other projects this solution file references</param>
+        </member>
+        <member name="M:DependenSee.Api.SolutionFile.#ctor(System.String,System.String,System.String,System.Collections.Generic.List{System.String})">
+            <summary>
+            Representation of a solution file
+            </summary>
+            <param name="Name">Name of the solution. This is usually the filename without the extension</param>
+            <param name="Id">
+            Uniquely identifies this solution in the result and is used to draw the references. 
+            </param>
+            <param name="Path">Path of this solution file relative to <see cref="P:DependenSee.Api.DiscoveryRequest.SourceFolder"/></param>
+            <param name="ProjectIds">Other projects this solution file references</param>
+        </member>
+        <member name="P:DependenSee.Api.SolutionFile.Name">
+            <summary>Name of the solution. This is usually the filename without the extension</summary>
+        </member>
+        <member name="P:DependenSee.Api.SolutionFile.Id">
+            <summary>
+            Uniquely identifies this solution in the result and is used to draw the references. 
+            </summary>
+        </member>
+        <member name="P:DependenSee.Api.SolutionFile.Path">
+            <summary>Path of this solution file relative to <see cref="P:DependenSee.Api.DiscoveryRequest.SourceFolder"/></summary>
+        </member>
+        <member name="P:DependenSee.Api.SolutionFile.ProjectIds">
+            <summary>Other projects this solution file references</summary>
+        </member>
+        <member name="T:DependenSee.Api.ISolutionFileParser">
+            <summary>
+            Implementation should parse a given solution file,
+            and create a <see cref="T:DependenSee.Api.SolutionFile"/>
+            </summary>
+        </member>
+        <member name="M:DependenSee.Api.ISolutionFileParser.Parse(System.String,DependenSee.Api.DiscoveryRequest)">
+            <summary>
+            Implementation should parse a given solution file,
+            and create a <see cref="T:DependenSee.Api.SolutionFile"/>
+            </summary>
+        </member>
+    </members>
+</doc>

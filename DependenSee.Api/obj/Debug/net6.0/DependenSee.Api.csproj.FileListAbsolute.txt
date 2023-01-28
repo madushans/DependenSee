@@ -1,0 +1,14 @@
+C:\Repos\DependenSee\DependenSee.Api\bin\Debug\net6.0\DependenSee.Api.deps.json
+C:\Repos\DependenSee\DependenSee.Api\bin\Debug\net6.0\DependenSee.Api.dll
+C:\Repos\DependenSee\DependenSee.Api\bin\Debug\net6.0\DependenSee.Api.pdb
+C:\Repos\DependenSee\DependenSee.Api\obj\Debug\net6.0\DependenSee.Api.csproj.AssemblyReference.cache
+C:\Repos\DependenSee\DependenSee.Api\obj\Debug\net6.0\DependenSee.Api.GeneratedMSBuildEditorConfig.editorconfig
+C:\Repos\DependenSee\DependenSee.Api\obj\Debug\net6.0\DependenSee.Api.AssemblyInfoInputs.cache
+C:\Repos\DependenSee\DependenSee.Api\obj\Debug\net6.0\DependenSee.Api.AssemblyInfo.cs
+C:\Repos\DependenSee\DependenSee.Api\obj\Debug\net6.0\DependenSee.Api.csproj.CoreCompileInputs.cache
+C:\Repos\DependenSee\DependenSee.Api\obj\Debug\net6.0\DependenSee.Api.dll
+C:\Repos\DependenSee\DependenSee.Api\obj\Debug\net6.0\refint\DependenSee.Api.dll
+C:\Repos\DependenSee\DependenSee.Api\obj\Debug\net6.0\DependenSee.Api.pdb
+C:\Repos\DependenSee\DependenSee.Api\obj\Debug\net6.0\ref\DependenSee.Api.dll
+C:\Repos\DependenSee\DependenSee.Api\bin\Debug\net6.0\DependenSee.Api.xml
+C:\Repos\DependenSee\DependenSee.Api\obj\Debug\net6.0\DependenSee.Api.xml

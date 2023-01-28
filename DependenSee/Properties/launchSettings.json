@@ -2,7 +2,7 @@
   "profiles": {
     "DependenSee": {
       "commandName": "Project",
-      "commandLineArgs": "C:\\Users\\Madushan\\source\\repos\\ConsoleApp5 C:\\temp\\test.html -P"
+      "commandLineArgs": "-S C:\\Repos\\DependenSee\\ -T Json -O C:\\temp\\test3.json"
     }
   }
 }

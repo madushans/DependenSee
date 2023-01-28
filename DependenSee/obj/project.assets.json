@@ -1,0 +1,124 @@
+{
+  "version": 3,
+  "targets": {
+    "net6.0": {
+      "PowerArgs/3.6.0": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/PowerArgs.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/PowerArgs.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "DependenSee.Api/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "compile": {
+          "bin/placeholder/DependenSee.Api.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DependenSee.Api.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "PowerArgs/3.6.0": {
+      "sha512": "ooaQtI6nLOMNQoNfuiEcM1lnPJ9mBaXF99pt1EHnupwqZtC+L5I7IeSjZ/RA+h6Z2DImdFtWn9PNHbhcL9qNKA==",
+      "type": "package",
+      "path": "powerargs/3.6.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netstandard2.0/PowerArgs.dll",
+        "lib/netstandard2.0/PowerArgs.xml",
+        "powerargs.3.6.0.nupkg.sha512",
+        "powerargs.nuspec"
+      ]
+    },
+    "DependenSee.Api/1.0.0": {
+      "type": "project",
+      "path": "../DependenSee.Api/DependenSee.Api.csproj",
+      "msbuildProject": "../DependenSee.Api/DependenSee.Api.csproj"
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net6.0": [
+      "DependenSee.Api >= 1.0.0",
+      "PowerArgs >= 3.6.0"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\Madushan\\.nuget\\packages\\": {}
+  },
+  "project": {
+    "version": "2.2.0",
+    "restore": {
+      "projectUniqueName": "C:\\Repos\\DependenSee\\DependenSee\\DependenSee.csproj",
+      "projectName": "DependenSee",
+      "projectPath": "C:\\Repos\\DependenSee\\DependenSee\\DependenSee.csproj",
+      "packagesPath": "C:\\Users\\Madushan\\.nuget\\packages\\",
+      "outputPath": "C:\\Repos\\DependenSee\\DependenSee\\obj\\",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\Madushan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "net6.0"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "projectReferences": {
+            "C:\\Repos\\DependenSee\\DependenSee.Api\\DependenSee.Api.csproj": {
+              "projectPath": "C:\\Repos\\DependenSee\\DependenSee.Api\\DependenSee.Api.csproj"
+            }
+          }
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      }
+    },
+    "frameworks": {
+      "net6.0": {
+        "targetAlias": "net6.0",
+        "dependencies": {
+          "PowerArgs": {
+            "target": "Package",
+            "version": "[3.6.0, )"
+          }
+        },
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.102\\RuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}
