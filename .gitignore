@@ -362,3 +362,6 @@ MigrationBackup/
 FodyWeavers.xsd
 
 */Properties/launchSettings.json
+
+# ignore built template.
+/src/DependenSee/HtmlResultTemplate.html

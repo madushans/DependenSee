@@ -13,6 +13,10 @@
 
 
   <ItemGroup>
+	  <!--
+	    This file is copied by the VisualizerOutputFound target below after building the visualizer.
+		This is excluded from source control		
+	  -->
     <Content Include="HtmlResultTemplate.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -39,5 +43,16 @@
     <ProjectReference Include="..\DependenSee.Api\DependenSee.Api.csproj" />
   </ItemGroup>
 
+
+  <Target Name="VisualizerOutputMissing" BeforeTargets="BeforeCompile" Condition="!Exists('../dependensee.visualizer/build/index.html')">
+		<Message Text="Visualizer output not found. Run 'npm install &amp;&amp; npm run build' on dependensee.visualizer folder first." Importance="high"></Message>
+		<Error Text="Visualizer output not found. Run 'npm install &amp;&amp; npm run build' on dependensee.visualizer folder first." />
+	</Target>
+
+	<Target Name="VisualizerOutputFound" BeforeTargets="BeforeCompile" Condition="Exists('../dependensee.visualizer/build/index.html')">
+		<Message Text="Visualizer output found. Copying..." Importance="high"></Message>
+		<Copy SourceFiles="../dependensee.visualizer/build/index.html" DestinationFiles="./HtmlResultTemplate.html" />
+		<Message Text="Visualizer output Copied" Importance="high"></Message>
+	</Target>
 
 </Project>
