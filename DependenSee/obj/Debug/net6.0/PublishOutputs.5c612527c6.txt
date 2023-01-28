@@ -1,8 +1,0 @@
-C:\Repos\DependenSee\DependenSee\bin\Debug\net6.0\publish\HtmlResultTemplate.html
-C:\Repos\DependenSee\DependenSee\bin\Debug\net6.0\publish\DependenSee.exe
-C:\Repos\DependenSee\DependenSee\bin\Debug\net6.0\publish\DependenSee.dll
-C:\Repos\DependenSee\DependenSee\bin\Debug\net6.0\publish\DependenSee.deps.json
-C:\Repos\DependenSee\DependenSee\bin\Debug\net6.0\publish\DependenSee.runtimeconfig.json
-C:\Repos\DependenSee\DependenSee\bin\Debug\net6.0\publish\DependenSee.pdb
-C:\Repos\DependenSee\DependenSee\bin\Debug\net6.0\publish\Newtonsoft.Json.dll
-C:\Repos\DependenSee\DependenSee\bin\Debug\net6.0\publish\PowerArgs.dll
