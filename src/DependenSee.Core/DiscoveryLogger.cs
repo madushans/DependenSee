@@ -1,4 +1,4 @@
-﻿namespace DependenSee.Api;
+﻿namespace DependenSee.Core;
 
 /// <summary>
 /// Logger that can write different severity messages.

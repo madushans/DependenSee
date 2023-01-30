@@ -1,9 +1,9 @@
 ﻿using System.Xml;
 
-namespace DependenSee.Api;
+namespace DependenSee.Core.Parsers;
 
 /*
- SAMPLE MSBUILD Project File is expected to be as below
+ SAMPLE Project File is expected to be as below
 
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
@@ -56,18 +56,19 @@ namespace DependenSee.Api;
 
 
 /// <summary>
-/// Representation of an MSBuild file
+/// Representation of an MSBuild project file
 /// </summary>
 /// <param name="ProjectName">Name of the project. This is usually the filename without the extension</param>
 /// <param name="Id">
 /// Uniquely identifies this project in the result and is used to draw the references. 
-/// This ID must match the <see cref="SolutionFile.ProjectIds"/> if this project is 
-/// referenced in a given <see cref="SolutionFile"/>
+/// This ID must match the <see cref="SolutionFile.UnnestedProjectIds"/> or 
+/// <see cref="SolutionFolder.ChildProjectIds"/> if this project is 
+/// referenced in a given <see cref="SolutionFile"/> or <see cref="SolutionFolder"/>
 /// </param>
 /// <param name="Path">Path of this MSBuild file relative to <see cref="DiscoveryRequest.SourceFolder"/></param>
-/// <param name="Projects">Other projects this MSBuild file references</param>
-/// <param name="Packages">Other packages this MSBuild file references</param>
-public record class MSBuildFile(string ProjectName,
+/// <param name="Projects">Other projects this MSBuild project file references</param>
+/// <param name="Packages">Other packages this MSBuild project file references</param>
+public record class ProjectFile(string ProjectName,
                                 string Id,
                                 string Path,
                                 List<Project> Projects,
@@ -75,27 +76,27 @@ public record class MSBuildFile(string ProjectName,
 
 /// <summary>
 /// Implementation should parse a given MSBuild file,
-/// and create a <see cref="MSBuildFile"/>
+/// and create a <see cref="ProjectFile"/>
 /// </summary>
-public interface IMSBuildFileParser
+public interface IProjectFileParser
 {
     /// <summary>
     /// Implementation should parse a given MSBuild file,
-    /// and create a <see cref="MSBuildFile"/>
+    /// and create a <see cref="ProjectFile"/>
     /// </summary>
-    MSBuildFile Parse(string msBuildFilePath, DiscoveryRequest request);
+    ProjectFile Parse(string msBuildFilePath, DiscoveryRequest request);
 }
 
-internal class MSBuildFileParser : IMSBuildFileParser
+internal class ProjectFileParser : IProjectFileParser
 {
     private readonly IDiscoveryLogger logger;
 
-    public MSBuildFileParser(IDiscoveryLogger logger)
+    public ProjectFileParser(IDiscoveryLogger logger)
     {
         this.logger = logger;
     }
 
-    public MSBuildFile Parse(string msBuildFilePath, DiscoveryRequest request)
+    public ProjectFile Parse(string msBuildFilePath, DiscoveryRequest request)
     {
         var xml = new XmlDocument();
         xml.Load(msBuildFilePath);
@@ -104,7 +105,7 @@ internal class MSBuildFileParser : IMSBuildFileParser
         if (basePath is null)
             throw new Exception($"Could not get base path for {msBuildFilePath}. This may be because this does not have a parent directory, which is unexpected.");
 
-        return new MSBuildFile(
+        return new ProjectFile(
             ProjectName: Path.GetFileNameWithoutExtension(msBuildFilePath),
             Id: Path.GetRelativePath(relativeTo: request.SourceFolder, path: msBuildFilePath),
             Path: Path.GetRelativePath(relativeTo: request.SourceFolder, path: msBuildFilePath),

@@ -1,13 +1,13 @@
-﻿using System.Diagnostics;
+﻿using DependenSee.Core.Parsers;
 
-namespace DependenSee.Api;
+namespace DependenSee.Core;
 
 /// <summary>
 /// Entry point for discovering your dependencies.
 /// </summary>
 public class DiscoveryService
 {
-    private readonly IMSBuildFileParser msBuildFileParser;
+    private readonly IProjectFileParser msBuildFileParser;
     private readonly ISolutionFileParser solutionFileParser;
     private readonly IDiscoveryLogger logger;
 
@@ -18,7 +18,7 @@ public class DiscoveryService
     /// <param name="msBuildFileParser">
     /// Implementation that can parse an MSBuild file. 
     /// Leave as <see langword="null"/> to use the default implementation
-    /// of <see cref="MSBuildFileParser"/>
+    /// of <see cref="ProjectFileParser"/>
     /// </param>
     /// <param name="solutionFileParser">
     /// Implementation that can parse a solution file. 
@@ -29,12 +29,12 @@ public class DiscoveryService
     /// Implementation of a logger. Leaving as <see langword="null"/> will
     /// use the <see cref="NullDiscoveryLogger"/> which will omit logging.
     /// </param>
-    public DiscoveryService(IMSBuildFileParser? msBuildFileParser = null,
+    public DiscoveryService(IProjectFileParser? msBuildFileParser = null,
                             ISolutionFileParser? solutionFileParser = null,
                             IDiscoveryLogger? logger = null)
     {
         this.logger = logger ?? new NullDiscoveryLogger();
-        this.msBuildFileParser = msBuildFileParser  ?? new MSBuildFileParser(this.logger);
+        this.msBuildFileParser = msBuildFileParser  ?? new ProjectFileParser(this.logger);
         this.solutionFileParser = solutionFileParser ?? new SolutionFileParser(this.logger);
     }
 
@@ -146,7 +146,8 @@ public class DiscoveryService
             result.Solutions.Add(new Solution(Id: solutionFile.Id,
                                                    Name: solutionFile.Name,
                                                    Path: solutionFile.Path,
-                                                   ProjectIds: solutionFile.ProjectIds));
+                                                   UnnestedProjectIds: solutionFile.UnnestedProjectIds,
+                                                   SolutionFolders: solutionFile.SolutionFolders));
         }
     }
 

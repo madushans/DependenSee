@@ -1,4 +1,8 @@
-﻿namespace DependenSee;
+﻿using PowerArgs;
+using System;
+
+namespace DependenSee;
+
 public static class Program
 {
     public static int Main(string[] args)
@@ -12,7 +16,7 @@ public static class Program
         }
         try
         {
-            Args.InvokeMain<PowerArgsProgram>(args);
+            Args.InvokeAction<PowerArgsProgram>(args);
             return 0;
         }
         catch (Exception ex)

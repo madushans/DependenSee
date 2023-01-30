@@ -5,7 +5,7 @@ VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DependenSee", "DependenSee\DependenSee.csproj", "{6C4DA9BF-3DEC-4794-8E63-3F066A0C7361}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DependenSee.Api", "DependenSee.Api\DependenSee.Api.csproj", "{DD96A398-5B27-4D78-9F0C-1D0F516FADB1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DependenSee.Core", "DependenSee.Core\DependenSee.Core.csproj", "{DD96A398-5B27-4D78-9F0C-1D0F516FADB1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

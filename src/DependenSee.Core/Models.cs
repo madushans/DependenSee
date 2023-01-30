@@ -1,4 +1,4 @@
-﻿namespace DependenSee.Api;
+﻿namespace DependenSee.Core;
 
 /// <summary>
 /// Represents a request details for Discovery
@@ -91,17 +91,14 @@ public record class Package(string Id, string Name);
 
 
 /// <summary>
-/// Description of a reference between a project and another
-/// project or a package.
+/// Description of a reference between entities. These can be 
+/// projects, packages, solutions or solution folders
 /// </summary>
 /// <param name="From">
-/// Reference origination. This is an <see cref="Project.Id"/>
-/// of a <see cref="Project"/>
+/// Reference origination.
 /// </param>
 /// <param name="To">
-/// Reference destination. This is an <see cref="Project.Id"/>
-/// of a <see cref="Project"/> or an <see cref="Package.Id"/>
-/// of a <see cref="Package"/>
+/// Reference destination.
 /// </param>
 public record class Reference(string From, string To);
 
@@ -118,8 +115,24 @@ public record class Reference(string From, string To);
 /// Relative path of the solution file, relative to the 
 /// <see cref="DiscoveryRequest.SourceFolder"/>
 /// </param>
-/// <param name="ProjectIds">IDs of projects this solution references</param>
+/// <param name="UnnestedProjectIds">
+/// IDs of projects this solution references, 
+/// but is not in a solution folder
+/// </param>
+/// <param name="SolutionFolders">
+/// Solution folders in this solution and the 
+/// IDs of projects under them
+/// </param>
 public record class Solution(string Id,
                              string Name,
                              string Path,
-                             List<string> ProjectIds);
+                             List<string> UnnestedProjectIds,
+                             List<SolutionFolder> SolutionFolders);
+
+/// <param name="Name">Name of the solution folder</param>
+/// <param name="Id">Unique identifier for this solution folder. This does not 
+/// match to any physical path since it is a virtual folder.</param>
+/// <param name="ChildProjectIds">IDs of the child projects under this solution folder</param>
+public record class SolutionFolder(string Name,
+                                       string Id,
+                                       List<string> ChildProjectIds);

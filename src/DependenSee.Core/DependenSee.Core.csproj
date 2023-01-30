@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>DependenSee Core</Title>
+    <Authors>Madushan</Authors>
+	<Version>3.0.0</Version>
+	<PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <RepositoryUrl>https://github.com/madushans/DependenSee</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/madushans/DependenSee</PackageProjectUrl>
+    <Description>Core API of the DependenSee tool. Creates visualizations or export project and package dependency graph. Also available as a standalone dotnet tool.</Description>
+	<PackageTags>dependency, visualizer, dependensee</PackageTags>
+  </PropertyGroup>
+
+	<Target Name="VisualizerOutputMissing" BeforeTargets="BeforeCompile" Condition="!Exists('../dependensee.visualizer/build/index.html')">
+		<Message Text="Visualizer output not found. Run 'npm install &amp;&amp; npm run build' on dependensee.visualizer folder first." Importance="high"></Message>
+		<Error Text="Visualizer output not found. Run 'npm install &amp;&amp; npm run build' on dependensee.visualizer folder first." />
+	</Target>
+
+	<Target Name="CopyVisualizerOutput" BeforeTargets="BeforeCompile" Condition="Exists('../dependensee.visualizer/build/index.html')">
+		<Message Text="Visualizer output found. Copying..." Importance="high"></Message>
+		<Copy SourceFiles="../dependensee.visualizer/build/index.html" DestinationFiles="./HtmlResultTemplate.html" />
+		<Message Text="Visualizer output Copied" Importance="high"></Message>
+	</Target>
+
+	<ItemGroup>
+		<None Include="..\..\LICENSE" Pack="true" PackagePath="">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="HtmlResultTemplate.html">
+		<!--
+		This is excluded from source control, but populated by 
+		CopyVisualizerOutput target above, when the visualizer 
+		frontend is built
+		-->
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	</ItemGroup>
+</Project>

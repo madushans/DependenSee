@@ -364,4 +364,4 @@ FodyWeavers.xsd
 */Properties/launchSettings.json
 
 # ignore built template.
-/src/DependenSee/HtmlResultTemplate.html
+/src/DependenSee.Core/HtmlResultTemplate.html
