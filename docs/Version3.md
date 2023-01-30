@@ -25,7 +25,7 @@ This will be the evolution of the existing CLI tool and will be available as it 
 
 Currently the most used part of the project is the html based visualizer. This was originally built as a bare bones html page, and not much though was put into it. 
 
-However it has clearly shown to be useful, and requires an overhaul. Going forward this is planned to be a React app, though still self-contained in a single html file. Moving to React allows to make a better interface than what we have now. For ore information see [Visualizer](/docs/Visualizer.md)
+However it has clearly shown to be useful, and requires an overhaul. Going forward this is planned to be a React app, though still self-contained in a single html file. Moving to React allows to make a better interface than what we have now. For ore information see [Visualizer](https://github.com/madushans/DependenSee/blob/v3/docs/Visualizer.md)
 
 ## Changes to Philosophy
 
