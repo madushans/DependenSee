@@ -1,6 +1,14 @@
 # DependenSee
 Dotnet project and package dependency visualizer.
 
+---
+
+## V3 Is Coming! 🔜
+
+I have started work on the next major version of DependenSee. See [what's coming!](/docs/Version3.md)
+
+---
+
 # Install
 
  ***Requires .NET 6 Runtime***
