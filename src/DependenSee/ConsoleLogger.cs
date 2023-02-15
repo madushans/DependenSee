@@ -1,4 +1,5 @@
-﻿using DependenSee.Core;
+﻿using System;
+using DependenSee.Core;
 
 namespace DependenSee;
 
