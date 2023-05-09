@@ -5,6 +5,8 @@ public class ReferenceDiscoveryService
     public string SourceFolder { get; set; }
     public string OutputPath { get; set; }
     public bool IncludePackages { get; set; }
+
+    public bool DeepNesting { get; set; }
     public OutputTypes OutputType { get; set; }
     public string IncludeProjectNamespaces { get; set; }
     public string ExcludeProjectNamespaces { get; set; }
@@ -108,6 +110,15 @@ public class ReferenceDiscoveryService
                     From = id,
                     To = project.Id
                 });
+
+                if (DeepNesting)
+                {
+                    var nested = Path.GetDirectoryName(project.Id);
+                    if (Directory.Exists(nested))
+                    {
+                        Discover(nested, result);
+                    }
+                }
             }
 
             if (!_shouldIncludePackages) continue;

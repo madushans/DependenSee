@@ -41,6 +41,11 @@ public class PowerArgsProgram
     [ArgShortcut("P")]
     public bool IncludePackages { get; set; }
 
+    [ArgDefaultValue(false)]
+    [ArgDescription("Whether the system should discover and map the dependency projects that have been identified")]
+    [ArgShortcut("DN")]
+    public bool DeepNesting { get; set; }
+
     [ArgDefaultValue(OutputTypes.Html)]
     [ArgDescription("Type of the output. Warnings are written to stderr. If you're piping the stdout, you may also want to check the stderr.")]
     [ArgShortcut("T")]
@@ -89,6 +94,7 @@ public class PowerArgsProgram
             IncludeProjectNamespaces = IncludeProjectNamespaces,
 
             IncludePackages = IncludePackages,
+            DeepNesting = DeepNesting,
 
             ExcludeFolders = ExcludeFolders,
             FollowReparsePoints = FollowReparsePoints,
