@@ -194,8 +194,13 @@ public class ReferenceDiscoveryService
         foreach (XmlNode node in projectReferenceNodes)
         {
             var referencePath = node.Attributes["Include"].Value;
-            var fullPath = Path.GetFullPath(referencePath, basePath);
+            if (!string.IsNullOrEmpty(referencePath))
+            {
+                // dotnet csproj uses windows file separator characters on all platforms, even linux.  Replace with the local system's character(s)
+                referencePath = referencePath.Replace("\\", Path.DirectorySeparatorChar.ToString());
+            }
 
+            var fullPath = Path.GetFullPath(referencePath, basePath);
             string filename = Path.GetFileNameWithoutExtension(fullPath);
 
             if (!fullPath.ToLower().StartsWith(SourceFolder.ToLower()))
