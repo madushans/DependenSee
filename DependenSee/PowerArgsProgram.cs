@@ -78,6 +78,10 @@ public class PowerArgsProgram
     [ArgShortcut("FReP")]
     public bool FollowReparsePoints { get; set; }
 
+    [ArgDefaultValue(false)]
+    [ArgDescription("Set if you want to recusively scan all project directories of the project dependencies of the projects found in the initially scanned directory, which can produce a 'slice' through a larger solution.")]
+    [ArgShortcut("ITDep")]
+    public bool IncludeTransitiveProjectDependencies { get; set; }
 
     public void Main()
     {
@@ -89,6 +93,7 @@ public class PowerArgsProgram
             IncludeProjectNamespaces = IncludeProjectNamespaces,
 
             IncludePackages = IncludePackages,
+            IncludeTransitiveProjectDependencies = IncludeTransitiveProjectDependencies,
 
             ExcludeFolders = ExcludeFolders,
             FollowReparsePoints = FollowReparsePoints,
@@ -97,7 +102,6 @@ public class PowerArgsProgram
             OutputType = OutputType,
 
             SourceFolder = SourceFolder,
-
         };
         var result = service.Discover();
         new ResultWriter().Write(result, OutputType, OutputPath, HtmlTitle);

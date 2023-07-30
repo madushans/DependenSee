@@ -5,6 +5,7 @@ public class ReferenceDiscoveryService
     public string SourceFolder { get; set; }
     public string OutputPath { get; set; }
     public bool IncludePackages { get; set; }
+    public bool IncludeTransitiveProjectDependencies { get; set; }
     public OutputTypes OutputType { get; set; }
     public string IncludeProjectNamespaces { get; set; }
     public string ExcludeProjectNamespaces { get; set; }
@@ -18,7 +19,8 @@ public class ReferenceDiscoveryService
     private string[] _includePackageNamespaces { get; set; }
     private string[] _excludePackageNamespaces { get; set; }
 
-    private bool _shouldIncludePackages { get; set; }
+    private bool _shouldIncludePackages;
+    private bool _shouldIncludeTransitiveProjectDependencies;
 
     public DiscoveryResult Discover()
     {
@@ -40,6 +42,8 @@ public class ReferenceDiscoveryService
         _shouldIncludePackages = IncludePackages
             || !string.IsNullOrWhiteSpace(IncludePackageNamespaces)
             || !string.IsNullOrWhiteSpace(ExcludePackageNamespaces);
+
+        _shouldIncludeTransitiveProjectDependencies = IncludeTransitiveProjectDependencies;
 
         Discover(SourceFolder, result);
         return result;
@@ -76,6 +80,9 @@ public class ReferenceDiscoveryService
 
         var projectFiles = Directory.EnumerateFiles(folder, "*.csproj")
             .Concat(Directory.EnumerateFiles(folder, "*.vbproj"));
+
+        List<Project> newProjects = new();
+
         foreach (var file in projectFiles)
         {
             var id = file.Replace(SourceFolder, "");
@@ -98,6 +105,8 @@ public class ReferenceDiscoveryService
                         _includeProjectNamespaces.Any(i => p.Name.ToLower().StartsWith(i))
                         && !_excludeProjectNamespaces.Any(i => p.Name.ToLower().StartsWith(i)))
                     .ToList();
+
+            newProjects = projects.Except(result.Projects).ToList();
 
             foreach (var project in projects)
             {
@@ -130,6 +139,11 @@ public class ReferenceDiscoveryService
             }
         }
         var directories = Directory.EnumerateDirectories(folder);
+        if (_shouldIncludeTransitiveProjectDependencies)
+        {
+            var newProjectDirectories = newProjects.Select(proj => proj.Id.Substring(0, proj.Id.LastIndexOf(Path.DirectorySeparatorChar))).ToList();
+            directories = directories.Union(newProjectDirectories);
+        }
         foreach (var directory in directories)
         {
             Discover(directory, result);
