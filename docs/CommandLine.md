@@ -206,3 +206,17 @@ While you can specify to exclude a path outside of the source folder, and it wil
 
 - `DependenSee \Source\SolutionFolder -ExcludeFolders "\Source\SolutionFolder\docs, Source\SolutionFolder\clientapp\node-modules"`  
 - `DependenSee \Source\SolutionFolder -EFol "C:\Source\SolutionFolder\docs, \Source\SolutionFolder\clientapp\node-modules"`
+
+## IncludeTransitiveProjectDependencies
+
+Set if you want to recusively scan all project directories of the project dependencies of the projects found in the initially scanned directory, which can produce a 'slice' through a larger solution.
+
+For example, target a single project folder in your solution, and enable this option, and the resulting output will include all the dependencies of your project's dependencies, all the way up the chain until they've all been included.  Chasing the depenencies in a bottom-up way like this can produce a more focused subgraph, dropping the noise from the rest of a large solution.
+
+**Shorthand: `-ITDep`**
+
+**Default: `False`**
+
+### Examples
+- `DependenSee \Source\SolutionFolder\ProjectFolder -IncludeTransitiveProjectDependencies`
+- `DependenSee \Source\SolutionFolder\ProjectFolder -ITDep`
