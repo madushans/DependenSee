@@ -5,7 +5,8 @@ internal class ResultWriter
     private const string HtmlTemplateToken = "'{#SOURCE_TOKEN#}'";
     private const string HtmlTitleToken = "{#TITLE_TOKEN#}";
     private const string HtmlTemplateName = "HtmlResultTemplate.html";
-    private JsonSerializerOptions _JsonSerializerOptions = new JsonSerializerOptions() { WriteIndented = true };
+
+    private readonly JsonSerializerOptions _JsonSerializerOptions = new() { WriteIndented = true };
 
     internal void Write(DiscoveryResult result, OutputTypes type, string outputPath, string htmlTitle)
     {
@@ -53,7 +54,7 @@ internal class ResultWriter
 
     private void WriteAsHtmlToFile(DiscoveryResult result, string outputPath, string title)
     {
-        var templatePath = Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName, HtmlTemplateName);
+        var templatePath = Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName!, HtmlTemplateName);
         var template = File.ReadAllText(templatePath);
         var html = template
             .Replace(HtmlTemplateToken, JsonSerializer.Serialize(result, _JsonSerializerOptions))
@@ -63,14 +64,14 @@ internal class ResultWriter
         Console.WriteLine($"HTML output written to {outputPath}");
     }
 
-    private void WriteAsXmlToConsole(DiscoveryResult result)
+    private static void WriteAsXmlToConsole(DiscoveryResult result)
     {
         var serializer = new XmlSerializer(typeof(DiscoveryResult));
         using var writeStream = Console.Out;
         serializer.Serialize(writeStream, result);
     }
 
-    private void WriteAsXmlToFile(DiscoveryResult result, string outputPath)
+    private static void WriteAsXmlToFile(DiscoveryResult result, string outputPath)
     {
         var serializer = new XmlSerializer(typeof(DiscoveryResult));
         using var writeStream = File.OpenWrite(outputPath);
@@ -83,6 +84,7 @@ internal class ResultWriter
         File.WriteAllText(outputPath, JsonSerializer.Serialize(result, _JsonSerializerOptions));
         Console.WriteLine($"JSON output written to {outputPath}");
     }
+
     private void WriteAsJsonToConsole(DiscoveryResult result) =>
         Console.WriteLine(JsonSerializer.Serialize(result, _JsonSerializerOptions));
 
@@ -94,5 +96,4 @@ internal class ResultWriter
         File.WriteAllText(outputPath, GraphvizSerializer.ToString(result));
         Console.WriteLine($"GraphViz output written to {outputPath}");
     }
-
 }
