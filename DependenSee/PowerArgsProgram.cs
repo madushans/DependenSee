@@ -6,9 +6,11 @@ public enum OutputTypes
     [ArgDescription("Creates a JSON file.")] Json,
     [ArgDescription("Creates a XML file.")] Xml,
     [ArgDescription("Creates a Graphviz/DOT file.")] Graphviz,
+    [ArgDescription("Creates a Mermaid/MMD file.")] Mermaid,
     [ArgDescription("Writes JSON output to stdout")] ConsoleJson,
     [ArgDescription("Writes XML output to stdout")] ConsoleXml,
     [ArgDescription("Writes Graphviz output to stdout")] ConsoleGraphviz,
+    [ArgDescription("Writes Mermaid output to stdout")] ConsoleMermaid,
 }
 
 [ArgExceptionBehavior(ArgExceptionPolicy.StandardExceptionHandling)]
@@ -60,6 +62,10 @@ public class PowerArgsProgram
     [ArgShortcut("EPrN")]
     public string ExcludeProjectNamespaces { get; set; }
 
+    [ArgDescription("Comma separated list of project file prefixes to trim from display. Wildcards not allowed. Only the filename is considered, case insensitive. Ex:'MyApp' trims display name of projects starting with 'MyApp'. 'MyApp.Core' and 'MyApp.Extensions' display as 'Core' and 'Extensions'")]
+    [ArgShortcut("TPrN")]
+    public string TrimProjectNamespaces { get; set; }
+
     [ArgDefaultValue("")]
     [ArgDescription("Comma separated list of package name prefixes to include. Wildcards not allowed. Only the package name is considered, case insensitive. If specified, 'IncludePackages' is overridden to True. Ex: 'Xamarin, Microsoft' includes only packages starting with Xamarin and packages starting with Microsoft")]
     [ArgShortcut("IPaN")]
@@ -68,6 +74,11 @@ public class PowerArgsProgram
     [ArgDescription("Comma separated list of package name prefixes to exclude. Wildcards not allowed. Only the filename is considered, case insensitive. If specified, 'IncludePackages' is overridden to True. This must be a subset of includes to be useful. Ex: 'Microsoft.Logging, Azure' Excludes packages starting with Microsoft.Logging and packages starting with Azure")]
     [ArgShortcut("EPaN")]
     public string ExcludePackageNamespaces { get; set; }
+
+    [ArgDescription("Comma separated list of package name prefixes to trim from display. Wildcards not allowed. Only the package name is considered, case insensitive. If specified, `-IncludePackages` is overridden to `True`. Ex:'MyApp' trims display name of packages starting with 'MyApp'. 'MyApp.Core' and 'MyApp.Extensions' display as 'Core' and 'Extensions'")]
+    [ArgShortcut("TPaN")]
+    public string TrimPackageNamespaces { get; set; }
+
     [ArgDefaultValue("")]
     [ArgDescription("Comma Separated list of folders (either absolute paths or relative to SourceFolder) to skip during scan, even if there are references to them from your projects.")]
     [ArgShortcut("EFol")]
@@ -78,7 +89,6 @@ public class PowerArgsProgram
     [ArgShortcut("FReP")]
     public bool FollowReparsePoints { get; set; }
 
-
     public void Main()
     {
         var service = new ReferenceDiscoveryService
@@ -87,6 +97,8 @@ public class PowerArgsProgram
             ExcludeProjectNamespaces = ExcludeProjectNamespaces,
             IncludePackageNamespaces = IncludePackageNamespaces,
             IncludeProjectNamespaces = IncludeProjectNamespaces,
+            TrimPackageNamespaces = TrimPackageNamespaces,
+            TrimProjectNamespaces = TrimProjectNamespaces,
 
             IncludePackages = IncludePackages,
 
@@ -97,7 +109,6 @@ public class PowerArgsProgram
             OutputType = OutputType,
 
             SourceFolder = SourceFolder,
-
         };
         var result = service.Discover();
         new ResultWriter().Write(result, OutputType, OutputPath, HtmlTitle);
