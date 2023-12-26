@@ -74,9 +74,11 @@ Type of output to produce. Following types are available.
 - `Json` - Creates a JSON file.
 - `Xml` - Creates a XML file.
 - `Graphviz` - Creates a Graphviz/DOT file.
+- `Mermaid` - Creates a Mermaid/MMD file.
 - `ConsoleJson` - Writes JSON output to stdout
 - `ConsoleXml` - Writes XML output to stdout
-- `GonsoleGraphviz` - Writes Graphviz output to stdout
+- `ConsoleGraphviz` - Writes Graphviz output to stdout
+- `ConsoleMermaid` - Writes Mermaid output to stdout
 
 When a `Console...` type output is  specified, the `-OutputPath` can be ommitted.
 `Console...` output types may still write warings to `stderr` stream. If you're piping just the `stderr` into another program, consider checking the `stderr` for warnings as well.

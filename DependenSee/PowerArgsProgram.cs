@@ -6,9 +6,11 @@ public enum OutputTypes
     [ArgDescription("Creates a JSON file.")] Json,
     [ArgDescription("Creates a XML file.")] Xml,
     [ArgDescription("Creates a Graphviz/DOT file.")] Graphviz,
+    [ArgDescription("Creates a Mermaid/MMD file.")] Mermaid,
     [ArgDescription("Writes JSON output to stdout")] ConsoleJson,
     [ArgDescription("Writes XML output to stdout")] ConsoleXml,
     [ArgDescription("Writes Graphviz output to stdout")] ConsoleGraphviz,
+    [ArgDescription("Writes Mermaid output to stdout")] ConsoleMermaid,
 }
 
 [ArgExceptionBehavior(ArgExceptionPolicy.StandardExceptionHandling)]

@@ -15,6 +15,7 @@ internal class ResultWriter
             case OutputTypes.Xml:
             case OutputTypes.Json:
             case OutputTypes.Graphviz:
+            case OutputTypes.Mermaid:
                 if (string.IsNullOrWhiteSpace(outputPath))
                 {
                     Console.Error.WriteLine($"output type {type} require specifying {nameof(outputPath)}");
@@ -37,6 +38,9 @@ internal class ResultWriter
             case OutputTypes.Graphviz:
                 WriteAsGraphvizToFile(result, outputPath);
                 break;
+            case OutputTypes.Mermaid:
+                WriteAsMermaidToFile(result, outputPath);
+                break;
             case OutputTypes.ConsoleJson:
                 WriteAsJsonToConsole(result);
                 break;
@@ -45,6 +49,9 @@ internal class ResultWriter
                 break;
             case OutputTypes.ConsoleGraphviz:
                 WriteAsGraphvizToConsole(result);
+                break;
+            case OutputTypes.ConsoleMermaid:
+                WriteAsMermaidToConsole(result);
                 break;
             default:
                 throw new Exception($"Unknown {nameof(type)} '{type}'");
@@ -95,4 +102,12 @@ internal class ResultWriter
         Console.WriteLine($"GraphViz output written to {outputPath}");
     }
 
+    private static void WriteAsMermaidToConsole(DiscoveryResult result)
+        => Console.WriteLine(MermaidSerializer.ToString(result));
+
+    private static void WriteAsMermaidToFile(DiscoveryResult result, string outputPath)
+    {
+        File.WriteAllText(outputPath, MermaidSerializer.ToString(result));
+        Console.WriteLine($"Mermaid output written to {outputPath}");
+    }
 }
