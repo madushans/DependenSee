@@ -8,15 +8,19 @@ public class ReferenceDiscoveryService
     public OutputTypes OutputType { get; set; }
     public string IncludeProjectNamespaces { get; set; }
     public string ExcludeProjectNamespaces { get; set; }
+    public string TrimProjectNamespaces { get; set; }
     public string IncludePackageNamespaces { get; set; }
     public string ExcludePackageNamespaces { get; set; }
+    public string TrimPackageNamespaces { get; set; }
     public bool FollowReparsePoints { get; set; }
     public string ExcludeFolders { get; set; }
 
     private string[] _includeProjectNamespaces { get; set; }
     private string[] _excludeProjectNamespaces { get; set; }
+    private string[] _trimProjectNamespaces { get; set; }
     private string[] _includePackageNamespaces { get; set; }
     private string[] _excludePackageNamespaces { get; set; }
+    private string[] _trimPackageNamespaces { get; set; }
 
     private bool _shouldIncludePackages { get; set; }
 
@@ -31,15 +35,18 @@ public class ReferenceDiscoveryService
 
         _includeProjectNamespaces = ParseStringToLowercaseStringArray(IncludeProjectNamespaces);
         _excludeProjectNamespaces = ParseStringToLowercaseStringArray(ExcludeProjectNamespaces);
+        _trimProjectNamespaces = ParseStringToLowercaseStringArray(TrimProjectNamespaces);
 
         _includePackageNamespaces = ParseStringToLowercaseStringArray(IncludePackageNamespaces);
         _excludePackageNamespaces = ParseStringToLowercaseStringArray(ExcludePackageNamespaces);
+        _trimPackageNamespaces = ParseStringToLowercaseStringArray(TrimPackageNamespaces);
 
         if (!_includeProjectNamespaces.Any()) _includeProjectNamespaces = new[] { "" };
         if (!_includePackageNamespaces.Any()) _includePackageNamespaces = new[] { "" };
         _shouldIncludePackages = IncludePackages
             || !string.IsNullOrWhiteSpace(IncludePackageNamespaces)
-            || !string.IsNullOrWhiteSpace(ExcludePackageNamespaces);
+            || !string.IsNullOrWhiteSpace(ExcludePackageNamespaces)
+            || !string.IsNullOrWhiteSpace(TrimPackageNamespaces);
 
         Discover(SourceFolder, result);
         return result;
@@ -88,7 +95,7 @@ public class ReferenceDiscoveryService
                 result.Projects.Add(new Project
                 {
                     Id = id,
-                    Name = name
+                    Name = toDisplayName(name, _trimProjectNamespaces),
                 });
 
             var (projects, packages) = DiscoverFileReferences(file);
@@ -97,7 +104,11 @@ public class ReferenceDiscoveryService
                     .Where(p =>
                         _includeProjectNamespaces.Any(i => p.Name.ToLower().StartsWith(i))
                         && !_excludeProjectNamespaces.Any(i => p.Name.ToLower().StartsWith(i)))
-                    .ToList();
+                    .Select(p =>
+                    {
+                        p.Name = toDisplayName(p.Name, _trimProjectNamespaces);
+                        return p;
+                    }).ToList();
 
             foreach (var project in projects)
             {
@@ -116,6 +127,11 @@ public class ReferenceDiscoveryService
             {
                 return _includePackageNamespaces.Any(i => p.Name.ToLower().StartsWith(i))
                     && !_excludePackageNamespaces.Any(i => p.Name.ToLower().StartsWith(i));
+            })
+            .Select(p =>
+            {
+                p.Name = toDisplayName(p.Name, _trimPackageNamespaces);
+                return p;
             }).ToList();
 
             foreach (var package in packages)
@@ -129,11 +145,15 @@ public class ReferenceDiscoveryService
                 });
             }
         }
+
         var directories = Directory.EnumerateDirectories(folder);
         foreach (var directory in directories)
         {
             Discover(directory, result);
         }
+
+        static string toDisplayName(string name, string[] prefixes)
+            => prefixes.FirstOrDefault(i => name.ToLower().StartsWith(i)) is string pn ? name[pn.Length..].TrimStart('.') : name;
     }
 
     private (List<Project> projects, List<Package> packages) DiscoverFileReferences(string path)

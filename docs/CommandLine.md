@@ -152,6 +152,20 @@ If you want to include spaces between items, make sure you enclose the parameter
 - `DependenSee \Source\SolutionFolder -O ConsoleJson -EPrN MyApp.Extensions, MyApp.Helpers`
   -  Excludes projects starting with MyApp.Extensions and projects starting with MyApp.Helpers
 
+## TrimProjectNamespaces
+Comma separated list of project file prefixes to trim. Wildcards not allowed. Only the filename is considered, case insensitive. 
+
+**Shorthand: `-TPrN`**
+
+**Default: `<empty string>`**
+
+### Examples
+
+- `DependenSee \Source\SolutionFolder -O ConsoleJson -TrimProjectNamespaces MyApp`
+  -  Displays project names starting with MyApp. 'MyApp.Core' and 'MyApp.Extensions' display as 'Core' and 'Extensions'
+- `DependenSee \Source\SolutionFolder -O ConsoleJson -TPrN MyApp`
+  -  Displays project names starting with MyApp. 'MyApp.Core' and 'MyApp.Extensions' display as 'Core' and 'Extensions'
+
 ## IncludePackageNamespaces
 Comma separated list of package name prefixes to include. Wildcards not allowed. Only the package name is considered, case insensitive. If specified, `-IncludePackages` is overridden to `True`.
 
@@ -170,13 +184,27 @@ If you want to include spaces between items, make sure you enclose the parameter
 
 ## ExcludePackageNamespaces
 
-Comma separated list of package name prefixes to exclude. Wildcards not allowed. Only the filename is considered, case insensitive. If specified, `-IncludePackages` is overridden to `True`. This must be a subset of includes to be useful.
+Comma separated list of package name prefixes to exclude. Wildcards not allowed. Only the package name is considered, case insensitive. If specified, `-IncludePackages` is overridden to `True`. This must be a subset of includes to be useful.
 
 If you want to include spaces between items, make sure you enclose the parameter value in double quotes.
 
 **Shorthand: `-EPaN`**
 
 **Default: `<unspecified>`**
+
+## TrimPackageNamespaces
+Comma separated list of package name prefixes to trim. Wildcards not allowed. Only the package name is considered, case insensitive. If specified, `-IncludePackages` is overridden to `True`.
+
+**Shorthand: `-TPaN`**
+
+**Default: `<empty string>`**
+
+### Examples
+
+- `DependenSee \Source\SolutionFolder -O ConsoleJson -TrimPackageNamespaces MyApp`
+  -  Displays package names starting with MyApp. 'MyApp.Core' and 'MyApp.Extensions' display as 'Core' and 'Extensions'
+- `DependenSee \Source\SolutionFolder -O ConsoleJson -TPaN MyApp`
+  -  Displays package names starting with MyApp. 'MyApp.Core' and 'MyApp.Extensions' display as 'Core' and 'Extensions'
 
 ## FollowReparsePoints
 
