@@ -139,7 +139,10 @@ public class ReferenceDiscoveryService
     private (List<Project> projects, List<Package> packages) DiscoverFileReferences(string path)
     {
         var xml = new XmlDocument();
-        xml.Load(path);
+        using (StreamReader reader = new StreamReader(path))
+        {
+            xml.Load(reader);
+        }
         var basePath = new FileInfo(path).Directory.FullName;
 
         var projects = DiscoverProjectRefrences(xml, basePath);
